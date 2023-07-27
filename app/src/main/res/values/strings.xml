@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">군밤</string>
+    <string name="로그인">로그인</string>
+    <string name="회원가입">회원가입</string>
+    <string name="이메일">이메일</string>
+    <string name="비밀번호">비밀번호</string>
+    <string name="비밀번호_확인">비밀번호 확인</string>
+    <string name="gotoLoginButton">로그인으로 이동</string>
+    <string name="gotoLoginText">이미 아이디가 존재하다면?</string>
+    <string name="로그아웃">로그아웃</string>
+</resources>
