@@ -14,7 +14,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:text="@string/로그인"
+                android:text="@string/login"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:textSize="24sp"
@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:ems="10"
-                    android:hint="@string/이메일"
+                    android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:minHeight="48dp"
                     android:autofillHints="" />
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:ems="10"
-                    android:hint="@string/비밀번호"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:minHeight="48dp"
                     android:autofillHints="" />
@@ -52,7 +52,28 @@
                     android:id="@+id/loginButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/로그인"/>
+                    android:text="@string/login"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/gotoPasswordResetButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/passwordReset"
+                        android:layout_weight="1"/>
+
+                    <Button
+                        android:id="@+id/gotoSignButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/signUp"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

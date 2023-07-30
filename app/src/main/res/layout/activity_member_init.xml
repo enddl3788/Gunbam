@@ -14,7 +14,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:text="@string/signUp"
+                android:text="@string/memberInit"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:textSize="24sp"
@@ -27,56 +27,50 @@
                 android:orientation="vertical">
 
                 <EditText
-                    android:id="@+id/emailEditText"
+                    android:id="@+id/nameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:ems="10"
-                    android:hint="@string/email"
-                    android:inputType="textEmailAddress"
-                    android:minHeight="48dp"
-                    android:autofillHints="" />
+                    android:inputType="textPersonName"
+                    android:hint="@string/name" />
 
                 <EditText
-                    android:id="@+id/passwordEditText"
+                    android:id="@+id/phoneNumberEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:ems="10"
-                    android:hint="@string/password"
-                    android:inputType="textPassword"
-                    android:minHeight="48dp"
-                    android:autofillHints="" />
+                    android:inputType="phone"
+                    android:hint="@string/phoneNumber" />
 
                 <EditText
-                    android:id="@+id/passwordCheckEditText"
+                    android:id="@+id/birthDateEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:ems="10"
-                    android:hint="@string/passwordCheck"
-                    android:inputType="textPassword"
-                    android:minHeight="48dp"
-                    android:textColorHint="@color/gray"
-                    android:autofillHints="" />
+                    android:inputType="date"
+                    android:hint="@string/birthDate" />
+
+                <EditText
+                    android:id="@+id/addressEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPostalAddress"
+                    android:hint="@string/address" />
 
                 <Button
-                    android:id="@+id/signUpButton"
+                    android:id="@+id/checkButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/signUp"
-                    android:layout_marginBottom="10dp"/>
+                    android:text="@string/ok"/>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gotoLoginText"/>
-                <Button
-                    android:id="@+id/gotoLoginButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gotoLoginButton"/>
+                    android:layout_height="wrap_content"/>
+
+
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

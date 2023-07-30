@@ -32,13 +32,6 @@ public class SignUpActivity extends Activity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-    }
-
-    @Override
     // 뒤로가기 로그인 방지
     public void onBackPressed() {
         super.onBackPressed();
@@ -55,7 +48,7 @@ public class SignUpActivity extends Activity {
                     signUp();
                     break;
                 case R.id.gotoLoginButton:
-                    startLoginActivity();
+                    startActivity(LoginActivity.class);
                     break;
             }
         }
@@ -81,8 +74,9 @@ public class SignUpActivity extends Activity {
                             .addOnCompleteListener(this, (task) -> {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
-                                    startToast("회원가입을 축하드립니다.");
                                     FirebaseUser user = mAuth.getCurrentUser();
+                                    startToast("회원가입을 축하드립니다.");
+                                    startActivity(MainActivity.class);
                                 } else {
                                     if (task.getException() != null) {
                                         try {
@@ -118,8 +112,9 @@ public class SignUpActivity extends Activity {
         Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
     }
 
-    private void startLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
+    private void startActivity(Class c) {
+        Intent intent = new Intent(this, c);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }
