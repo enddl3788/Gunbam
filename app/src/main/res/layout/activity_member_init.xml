@@ -27,36 +27,64 @@
                 android:orientation="vertical">
 
                 <EditText
+                    android:id="@+id/nickNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/nickName"
+                    android:inputType="textPersonName"
+                    android:minHeight="48dp" />
+
+                <EditText
                     android:id="@+id/nameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:hint="@string/name"
                     android:inputType="textPersonName"
-                    android:hint="@string/name" />
+                    android:minHeight="48dp" />
 
                 <EditText
                     android:id="@+id/phoneNumberEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:hint="@string/phoneNumber"
                     android:inputType="phone"
-                    android:hint="@string/phoneNumber" />
+                    android:minHeight="48dp" />
 
                 <EditText
                     android:id="@+id/birthDateEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:hint="@string/birthDate"
                     android:inputType="date"
-                    android:hint="@string/birthDate" />
+                    android:minHeight="48dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/MemberInitHint"/>
 
                 <EditText
-                    android:id="@+id/addressEditText"
+                    android:id="@+id/joinDateEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="textPostalAddress"
-                    android:hint="@string/address" />
+                    android:hint="@string/joinDate"
+                    android:inputType="date"
+                    android:minHeight="48dp" />
+
+                <EditText
+                    android:id="@+id/dischargeDateEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/dischargeDate"
+                    android:inputType="date"
+                    android:minHeight="48dp" />
 
                 <Button
                     android:id="@+id/checkButton"

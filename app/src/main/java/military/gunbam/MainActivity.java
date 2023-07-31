@@ -7,9 +7,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends Activity {
 
@@ -25,17 +32,26 @@ public class MainActivity extends Activity {
         if (user == null) {
             startActivity(LoginActivity.class);
         } else {
-            // 회원가입 or 로그인
-            if (user != null) {
-                // Name, email address, and profile photo Url
-                for (UserInfo profile : user.getProviderData()) {
-                    String name = user.getDisplayName();
-                    Log.e(TAG, "이름 : " + name);
-                    if (name == null) {
-                        startActivity(MemberInitActivity.class);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference docRef = db.collection("users").document(user.getUid());
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null) {
+                            if (document.exists()) {
+                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                            } else {
+                                Log.d(TAG, "No such document");
+                                startActivity(MemberInitActivity.class);
+                            }
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
                 }
-            }
+            });
         }
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
@@ -55,7 +71,6 @@ public class MainActivity extends Activity {
 
     private void startActivity(Class c) {
         Intent intent = new Intent(this, c);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }

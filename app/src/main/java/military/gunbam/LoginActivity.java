@@ -39,6 +39,15 @@ public class LoginActivity extends Activity {
         findViewById(R.id.gotoPasswordResetButton).setOnClickListener(onClickListener);
     }
 
+    @Override
+    // 뒤로가기 로그인 방지
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+    }
+
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -80,7 +89,7 @@ public class LoginActivity extends Activity {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     startToast("로그인 성공: " + user.getEmail());
-                                    finish();
+                                    startActivity(MainActivity.class);
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     if (task.getException() != null) {
