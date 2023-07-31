@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
         if (user == null) {
             startActivity(LoginActivity.class);
         } else {
+            startActivity(CameraActivity.class);
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

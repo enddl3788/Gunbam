@@ -62,6 +62,7 @@ public class MemberInitActivity extends Activity {
         String birthDate = ((EditText)findViewById(R.id.birthDateEditText)).getText().toString();
         String joinDate = ((EditText)findViewById(R.id.joinDateEditText)).getText().toString();
         String dischargeDate = ((EditText)findViewById(R.id.dischargeDateEditText)).getText().toString();
+        String rank = "user";
 
         // 유효성 검사
         if (nickName.length() == 0 || name.length() == 0 || phoneNumber.length() < 0 || birthDate.length() < 0) {
@@ -86,7 +87,7 @@ public class MemberInitActivity extends Activity {
             if (user != null) {
                 // 여기에 회원 정보를 Firebase에 저장하거나 다른 처리를 수행하는 코드를 추가할 수 있습니다.
                 String uid = user.getUid();
-                MemberInfo memberInfo = new MemberInfo(nickName, name, phoneNumber, birthDate, joinDate, dischargeDate);
+                MemberInfo memberInfo = new MemberInfo(nickName, name, phoneNumber, birthDate, joinDate, dischargeDate, rank);
                 db.collection("users").document(uid).set(memberInfo)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override

@@ -9,14 +9,16 @@ public class MemberInfo {
     private String birthDate;
     private String joinDate;
     private String dischargeDate;
+    private String rank;
 
-    public MemberInfo(String nickName, String name, String phoneNumber, String birthDate, String joinDate, String dischargeDate){
+    public MemberInfo(String nickName, String name, String phoneNumber, String birthDate, String joinDate, String dischargeDate, String rank){
         this.nickName = nickName;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.joinDate = joinDate;
         this.dischargeDate = dischargeDate;
+        this.rank = rank;
     }
 
     public String getNickName(){
@@ -59,6 +61,13 @@ public class MemberInfo {
     }
     public void setDischargeDate(String dischargeDate){
         this.dischargeDate = dischargeDate;
+    }
+
+    public String getRank(){
+        return this.rank;
+    }
+    public void setRank(String rank){
+        this.rank = rank;
     }
 
 }
