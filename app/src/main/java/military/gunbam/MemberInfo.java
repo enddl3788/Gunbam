@@ -23,6 +23,16 @@ public class MemberInfo {
         this.draftUrl = draftUrl;
     }
 
+    public MemberInfo(String nickName, String name, String phoneNumber, String birthDate, String joinDate, String dischargeDate, String rank){
+        this.nickName = nickName;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.joinDate = joinDate;
+        this.dischargeDate = dischargeDate;
+        this.rank = rank;
+    }
+
     public String getNickName(){
         return this.nickName;
     }
@@ -51,9 +61,7 @@ public class MemberInfo {
         this.birthDate = birthDate;
     }
 
-    public String getJoinDate(){
-        return this.joinDate;
-    }
+    public String getJoinDate(){return this.joinDate;}
     public void setJoinDate(String joinDate){
         this.joinDate = joinDate;
     }

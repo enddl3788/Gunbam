@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package military.gunbam;
+package military.gunbam.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.media.Image;
 import android.media.ImageReader;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -30,6 +29,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import military.gunbam.R;
+import military.gunbam.fragment.Camera2BasicFragment;
 
 public class CameraActivity extends AppCompatActivity {
     private Camera2BasicFragment camera2BasicFragment;

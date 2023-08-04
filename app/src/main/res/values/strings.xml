@@ -20,9 +20,10 @@
     <string name="nickName">닉네임 [부적절한 닉네임은 변경될 수 있습니다]</string>
     <string name="dischargeDate">제대일 ex)250101</string>
     <string name="MemberInitHint">밑 칸은 군인이 아니실 경우, 입력을 하지 않으셔도 됩니다.</string>
-
-    <string name="picture">촬영</string>
+    <string name="gallery">갤러리</string>
+    <string name="picture">사진 촬영</string>
     <string name="description_info">정보</string>
     <string name="request_permission">카메라 권한이 필요합니다.</string>
     <string name="camera_error">이 장치는 Camera2 API를 지원하지 않습니다.</string>
+    <string name="permission_msg">권한 2번 이상 거부시 재설치하여 재요청이 가능합니다.</string>
 </resources>

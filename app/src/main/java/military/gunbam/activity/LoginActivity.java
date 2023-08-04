@@ -1,4 +1,4 @@
-package military.gunbam;
+package military.gunbam.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,12 +15,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+
+import military.gunbam.R;
 
 public class LoginActivity extends Activity {
     private static final String TAG = "LoginActivity";
@@ -88,7 +87,7 @@ public class LoginActivity extends Activity {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                    startToast("로그인 성공: " + user.getEmail());
+                                    // startToast("로그인 성공: " + user.getEmail());
                                     startActivity(MainActivity.class);
                                 } else {
                                     // If sign in fails, display a message to the user.

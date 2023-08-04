@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package military.gunbam;
+package military.gunbam.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

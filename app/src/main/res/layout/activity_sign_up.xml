@@ -65,7 +65,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/signUp"
-                    android:layout_marginBottom="10dp"/>
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/button_rounded_bg"
+                    android:layout_margin="5dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -75,7 +77,9 @@
                     android:id="@+id/gotoLoginButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/gotoLoginButton"/>
+                    android:text="@string/gotoLoginButton"
+                    android:background="@drawable/button_rounded_bg"
+                    android:layout_margin="5dp"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
