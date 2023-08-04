@@ -86,16 +86,27 @@
                     android:inputType="date"
                     android:minHeight="48dp" />
 
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp" >
+
+                    <ImageView
+                        android:id="@+id/draftImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/draft_notice_image"
+                        android:background="@color/black"/>
+
+                </androidx.cardview.widget.CardView>
+
                 <Button
                     android:id="@+id/checkButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ok"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
 
             </LinearLayout>
 

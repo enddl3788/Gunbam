@@ -2,21 +2,39 @@ package military.gunbam;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class MemberInitActivity extends Activity {
     private static final String TAG = "MemberInitActivity";
+    private ImageView draftImageView;
+    private String draftPath;
 
     // 금칙어 리스트
     public String[] forbiddenWords = {
@@ -33,15 +51,29 @@ public class MemberInitActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_init);
 
+        draftImageView = findViewById(R.id.draftImageView);
+        draftImageView.setOnClickListener(onClickListener);
+
         findViewById(R.id.checkButton).setOnClickListener(onClickListener);
     }
 
     // 뒤로가기 로그인 방지
     public void onBackPressed() {
         super.onBackPressed();
-        moveTaskToBack(true);
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
+        finish();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0 : {
+                if (resultCode == Activity.RESULT_OK) {
+                    draftPath = data.getStringExtra("draftPath");
+                    Bitmap bmp = BitmapFactory.decodeFile(draftPath);
+                    draftImageView.setImageBitmap(bmp);
+                }
+            }
+        }
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -51,18 +83,21 @@ public class MemberInitActivity extends Activity {
                 case R.id.checkButton:
                     profileUpdate();
                     break;
+                case R.id.draftImageView:
+                    startActivity(CameraActivity.class);
+                    break;
             }
         }
     };
 
     private void profileUpdate() {
-        String nickName = ((EditText)findViewById(R.id.nickNameEditText)).getText().toString();
-        String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
-        String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
-        String birthDate = ((EditText)findViewById(R.id.birthDateEditText)).getText().toString();
-        String joinDate = ((EditText)findViewById(R.id.joinDateEditText)).getText().toString();
-        String dischargeDate = ((EditText)findViewById(R.id.dischargeDateEditText)).getText().toString();
-        String rank = "user";
+        final String nickName = ((EditText)findViewById(R.id.nickNameEditText)).getText().toString();
+        final String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
+        final String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
+        final String birthDate = ((EditText)findViewById(R.id.birthDateEditText)).getText().toString();
+        final String joinDate = ((EditText)findViewById(R.id.joinDateEditText)).getText().toString();
+        final String dischargeDate = ((EditText)findViewById(R.id.dischargeDateEditText)).getText().toString();
+        final String rank = "user";
 
         // 유효성 검사
         if (nickName.length() == 0 || name.length() == 0 || phoneNumber.length() < 0 || birthDate.length() < 0) {
@@ -81,29 +116,58 @@ public class MemberInitActivity extends Activity {
             startToast("닉네임과 이름에는 특수문자를 포함하지 않아야 합니다.");
         } else {
             // 회원정보가 유효한 경우 처리
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final StorageReference mountainImagesRef = storageRef.child("users/"+user.getUid()+"/draftNotice.jpg");
 
-            if (user != null) {
-                // 여기에 회원 정보를 Firebase에 저장하거나 다른 처리를 수행하는 코드를 추가할 수 있습니다.
-                String uid = user.getUid();
-                MemberInfo memberInfo = new MemberInfo(nickName, name, phoneNumber, birthDate, joinDate, dischargeDate, rank);
-                db.collection("users").document(uid).set(memberInfo)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                startToast("회원정보 등록에 성공하였습니다.");
-                                finish();
+            try {
+                InputStream stream = new FileInputStream(new File(draftPath));
+                UploadTask uploadTask = mountainImagesRef.putStream(stream);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+                        return mountainImagesRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            if (user != null) {
+                                // 여기에 회원 정보를 Firebase에 저장하거나 다른 처리를 수행하는 코드를 추가할 수 있습니다.
+                                String uid = user.getUid();
+                                MemberInfo memberInfo = new MemberInfo(nickName, name, phoneNumber, birthDate, joinDate, dischargeDate, rank, downloadUri.toString());
+                                db.collection("users").document(uid).set(memberInfo)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                startToast("회원정보 등록에 성공하였습니다.");
+                                                finish();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                startToast("회원정보 등록에 실패하였습니다.");
+                                            }
+                                        });
+                            } else {
+                                startToast("로그인 상태를 확인할 수 없습니다. 다시 로그인해주세요.");
                             }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                startToast("회원정보 등록에 실패하였습니다.");
-                            }
-                        });
-            } else {
-                startToast("로그인 상태를 확인할 수 없습니다. 다시 로그인해주세요.");
+                        } else {
+                            // Handle failures
+                            // ...
+                            Log.e(TAG, "이미지 전송 실패_2");
+                        }
+                    }
+                });
+            }catch (FileNotFoundException e){
+                Log.e(TAG, "에러 : " + e);
             }
         }
     }
@@ -114,8 +178,7 @@ public class MemberInitActivity extends Activity {
 
     private void startActivity(Class c) {
         Intent intent = new Intent(this, c);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
     }
 
     // 금칙어 필터링 함수

@@ -10,8 +10,9 @@ public class MemberInfo {
     private String joinDate;
     private String dischargeDate;
     private String rank;
+    private String draftUrl;
 
-    public MemberInfo(String nickName, String name, String phoneNumber, String birthDate, String joinDate, String dischargeDate, String rank){
+    public MemberInfo(String nickName, String name, String phoneNumber, String birthDate, String joinDate, String dischargeDate, String rank, String draftUrl){
         this.nickName = nickName;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -19,6 +20,7 @@ public class MemberInfo {
         this.joinDate = joinDate;
         this.dischargeDate = dischargeDate;
         this.rank = rank;
+        this.draftUrl = draftUrl;
     }
 
     public String getNickName(){
@@ -70,4 +72,11 @@ public class MemberInfo {
         this.rank = rank;
     }
 
+
+    public String getDraftUrl(){
+        return this.draftUrl;
+    }
+    public void setDraftUrl(String draftUrl){
+        this.draftUrl = draftUrl;
+    }
 }

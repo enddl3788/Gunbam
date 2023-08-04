@@ -267,6 +267,7 @@ public class Camera2BasicFragment extends Fragment
      * This a callback object for the {@link ImageReader}. "onImageAvailable" will be called when a
      * still image is ready to be saved.
      */
+    /*
     private final ImageReader.OnImageAvailableListener mOnImageAvailableListener
             = new ImageReader.OnImageAvailableListener() {
 
@@ -276,6 +277,12 @@ public class Camera2BasicFragment extends Fragment
         }
 
     };
+    */
+
+    private  ImageReader.OnImageAvailableListener mOnImageAvailableListener;
+    public void setOnImageAvailableListener(ImageReader.OnImageAvailableListener mOnImageAvailableListener) {
+        this.mOnImageAvailableListener = mOnImageAvailableListener;
+    }
 
     /**
      * {@link CaptureRequest.Builder} for the camera preview
@@ -688,7 +695,7 @@ public class Camera2BasicFragment extends Fragment
      * Closes the current {@link CameraDevice}.
      */
     // 카메라 닫기 메서드
-    private void closeCamera() {
+    public void closeCamera() {
         try {
             mCameraOpenCloseLock.acquire();
             synchronized (cameraLock) {
@@ -971,17 +978,22 @@ public class Camera2BasicFragment extends Fragment
     }
 
     /**
-     * UpLoad a JPEG {@link Image} into the specified {@link File}.
+     * Saves a JPEG {@link Image} into the specified {@link File}.
      */
-    private static class ImageUpLoader implements Runnable {
+    private static class ImageSaver implements Runnable {
 
         /**
          * The JPEG image
          */
         private final Image mImage;
+        /**
+         * The file we save the image into.
+         */
+        private final File mFile;
 
-        ImageUpLoader(Image image) {
+        ImageSaver(Image image, File file) {
             mImage = image;
+            mFile = file;
         }
 
         @Override
@@ -989,41 +1001,22 @@ public class Camera2BasicFragment extends Fragment
             ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
-
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference();
-
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            final StorageReference mountainImagesRef = storageRef.child("users/"+user.getUid()+"/draftNotice.jpg");
-
-            UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
-
-            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        Log.e(TAG, "이미지 전송 실패_1");
-                        throw task.getException();
-                    }
-
-                    // Continue with the task to get the download URL
-                    return mountainImagesRef.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        Log.e(TAG, "이미지 전송 성공" + downloadUri);
-                    } else {
-                        // Handle failures
-                        // ...
-                        Log.e(TAG, "이미지 전송 실패_2");
+            FileOutputStream output = null;
+            try {
+                output = new FileOutputStream(mFile);
+                output.write(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                mImage.close();
+                if (null != output) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
-            });
-
-
+            }
         }
 
     }
