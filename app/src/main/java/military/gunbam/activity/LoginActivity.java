@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import military.gunbam.R;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BasicActivity {
     private static final String TAG = "LoginActivity";
     private FirebaseAuth mAuth;
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import military.gunbam.R;
 import military.gunbam.adapter.GalleryAdapter;
 
-public class GalleryActivity extends Activity {
+public class GalleryActivity extends BasicActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
 

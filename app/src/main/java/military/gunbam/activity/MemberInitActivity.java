@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -38,9 +36,8 @@ import java.io.InputStream;
 
 import military.gunbam.MemberInfo;
 import military.gunbam.R;
-import military.gunbam.activity.CameraActivity;
 
-public class MemberInitActivity extends Activity {
+public class MemberInitActivity extends BasicActivity {
     private static final String TAG = "MemberInitActivity";
     private ImageView draftImageView;
     private String draftPath;

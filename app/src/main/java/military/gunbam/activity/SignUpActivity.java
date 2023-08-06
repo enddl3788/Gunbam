@@ -16,10 +16,8 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 import military.gunbam.R;
-import military.gunbam.activity.LoginActivity;
-import military.gunbam.activity.MainActivity;
 
-public class SignUpActivity extends Activity {
+public class SignUpActivity extends BasicActivity {
     private static final String TAG = "SignUpActivity";
     private FirebaseAuth mAuth;
 

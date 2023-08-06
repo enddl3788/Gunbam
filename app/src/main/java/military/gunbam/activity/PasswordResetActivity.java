@@ -14,9 +14,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import military.gunbam.R;
-import military.gunbam.activity.LoginActivity;
 
-public class PasswordResetActivity extends Activity {
+public class PasswordResetActivity extends BasicActivity {
     private static final String TAG = "PasswordResetActivity";
     private FirebaseAuth mAuth;
 

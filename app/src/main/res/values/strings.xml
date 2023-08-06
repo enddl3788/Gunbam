@@ -26,4 +26,6 @@
     <string name="request_permission">카메라 권한이 필요합니다.</string>
     <string name="camera_error">이 장치는 Camera2 API를 지원하지 않습니다.</string>
     <string name="permission_msg">권한 2번 이상 거부시 재설치하여 재요청이 가능합니다.</string>
+    <string name="main_text">제목</string>
+    <string name="sub_text">내용</string>
 </resources>

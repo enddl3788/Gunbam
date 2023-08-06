@@ -18,7 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import military.gunbam.R;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BasicActivity {
 
     private static final String TAG = "MainActivity";
 
@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
         }
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
+        findViewById(R.id.mainFloatingActionButton).setOnClickListener(onClickListener);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -65,6 +66,9 @@ public class MainActivity extends Activity {
                 case R.id.logoutButton:
                     FirebaseAuth.getInstance().signOut();
                     startActivity(LoginActivity.class);
+                    break;
+                case R.id.mainFloatingActionButton:
+                    startActivity(WritePostActivity.class);
                     break;
             }
         }

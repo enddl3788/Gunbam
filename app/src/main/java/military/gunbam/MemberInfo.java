@@ -1,7 +1,5 @@
 package military.gunbam;
 
-import android.widget.EditText;
-
 public class MemberInfo {
     private String nickName;
     private String name;
