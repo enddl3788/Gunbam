@@ -5,11 +5,20 @@
     android:orientation="vertical"
     android:padding="10dp">
 
+    <Button
+        android:id="@+id/writePostButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:background="@drawable/button_rounded_bg"
+        android:layout_gravity="right"/>
+
     <EditText
         android:id="@+id/titleEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/main_text"/>
+        android:hint="@string/main_text"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/contentsEditText"
@@ -19,10 +28,4 @@
         android:inputType="textMultiLine"
         android:hint="@string/sub_text"
         android:layout_weight="1"/>
-
-    <Button
-        android:id="@+id/writePostButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/ok"/>
 </LinearLayout>

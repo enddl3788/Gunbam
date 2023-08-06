@@ -12,7 +12,7 @@
     <string name="passwordResetButton">비밀번호 변경 링크 보내기</string>
     <string name="passwordResetText">비밀번호를 찾고자하는 아이디를 입력해주세요.</string>
     <string name="memberInit">회원정보</string>
-    <string name="ok">확인</string>
+    <string name="ok">완료</string>
     <string name="name">이름 ex)홍길동</string>
     <string name="phoneNumber">전화번호 ex)01012345678</string>
     <string name="birthDate">생년월일 ex)981201</string>
@@ -27,5 +27,6 @@
     <string name="camera_error">이 장치는 Camera2 API를 지원하지 않습니다.</string>
     <string name="permission_msg">권한 2번 이상 거부시 재설치하여 재요청이 가능합니다.</string>
     <string name="main_text">제목</string>
-    <string name="sub_text">내용</string>
+    <string name="sub_text">내용을 입력해주세요.</string>
+    <string name="write">글 쓰기</string>
 </resources>
