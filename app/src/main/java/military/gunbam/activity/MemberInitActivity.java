@@ -18,6 +18,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -91,8 +92,11 @@ public class MemberInitActivity extends Activity {
             case 0: {
                 if (resultCode == Activity.RESULT_OK) {
                     draftPath = data.getStringExtra("draftPath");
-                    Bitmap bmp = BitmapFactory.decodeFile(draftPath);
-                    draftImageView.setImageBitmap(bmp);
+                    Glide.with(this)
+                            .load(draftPath)
+                            .centerCrop()
+                            .override(500)
+                            .into(draftImageView);
                 }
             }
         }
