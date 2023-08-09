@@ -4,6 +4,23 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/postViewPublisherTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/writer" />
+
+    <TextView
+        android:id="@+id/postViewUploadTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/uploadDate"/>
+
+    <TextView
         android:id="@+id/postViewTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -11,7 +28,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/post_title" />
+        android:text="@string/post_title"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/postViewContentsTextView"
@@ -23,15 +41,6 @@
         android:text="@string/post_content" />
 
     <TextView
-        android:id="@+id/postViewPublisherTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/writer" />
-
-    <TextView
         android:id="@+id/postViewRecommendationCountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,13 +49,6 @@
         android:layout_marginEnd="16dp"
         android:text="@string/recommendation" />
 
-    <TextView
-        android:id="@+id/postViewUploadTimeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/uploadDate"/>
+
 
 </LinearLayout>

@@ -63,6 +63,7 @@ public class PostListFragment extends Fragment {
                         if (task.isSuccessful()) {
                             postList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                String id = document.getId();
                                 String title = document.getString("title");
                                 String contents = document.getString("contents");
                                 String publisherUid = document.getString("publisher");
@@ -74,7 +75,7 @@ public class PostListFragment extends Fragment {
                                 // Fetch the nickname from the "users" collection using the publisherUid
                                 if (isAnonymous) {
                                     String nickName = "익명";
-                                    WriteInfo writeInfo = new WriteInfo(title, contents, nickName, recommendationCount, isAnonymous, uploadTime);
+                                    WriteInfo writeInfo = new WriteInfo(id, title, contents, nickName, recommendationCount, isAnonymous, uploadTime);
                                     postList.add(writeInfo);
                                     postAdapter.notifyDataSetChanged();
                                 } else {
@@ -86,7 +87,7 @@ public class PostListFragment extends Fragment {
                                                 public void onSuccess(DocumentSnapshot userDocument) {
                                                     if (userDocument.exists()) {
                                                         String nickName = userDocument.getString("nickName");
-                                                        WriteInfo writeInfo = new WriteInfo(title, contents, nickName, recommendationCount, isAnonymous, uploadTime);
+                                                        WriteInfo writeInfo = new WriteInfo(id, title, contents, nickName, recommendationCount, isAnonymous, uploadTime);
                                                         postList.add(writeInfo);
                                                         postAdapter.notifyDataSetChanged();
                                                     }

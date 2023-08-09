@@ -1,5 +1,7 @@
 package military.gunbam.adapter;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
 import military.gunbam.R;
 import military.gunbam.WriteInfo;
+import military.gunbam.activity.ViewPostActivity;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private List<WriteInfo> postList;
+    private static final String TAG = "PostAdapter";
 
     public PostAdapter(List<WriteInfo> postList) {
         this.postList = postList;
@@ -42,6 +49,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String formattedUploadTime = sdf.format(post.getUploadTime().toDate());
         holder.postUploadTimeTextView.setText(formattedUploadTime);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String postId = post.getId();
+                Intent intent = new Intent(view.getContext(), ViewPostActivity.class);
+                intent.putExtra("postId", postId); // Assuming you have a method to get postId
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
