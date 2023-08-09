@@ -13,6 +13,14 @@
         android:textColor="@color/black"
         android:textSize="24sp" />
 
+    <ProgressBar
+        android:id="@+id/postListProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="50dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postRecyclerView"
         android:layout_width="match_parent"

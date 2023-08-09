@@ -6,7 +6,7 @@ public class CommentInfo {
     private String commentId;
     private String commentContent;
     private String commentAuthor;
-    private boolean isAnonymous;
+    private boolean commentIsAnonymous;
     private String parentCommentId;
     private Timestamp commentUploadTime;
 
@@ -16,23 +16,23 @@ public class CommentInfo {
      * @param commentId        댓글 고유 식별자 정보
      * @param commentContent   댓글 내용 정보
      * @param commentAuthor    댓글 작성자 정보
-     * @param isAnonymous      익명 여부 정보
+     * @param commentIsAnonymous      익명 여부 정보
      * @param parentCommentId  부모 댓글의 식별자 정보 (대댓글의 경우)
      * @param commentUploadTime 댓글 업로드 시간 정보
      */
-    public CommentInfo(String commentId, String commentContent, String commentAuthor, boolean isAnonymous, String parentCommentId, Timestamp commentUploadTime) {
+    public CommentInfo(String commentId, String commentContent, String commentAuthor, boolean commentIsAnonymous, String parentCommentId, Timestamp commentUploadTime) {
         this.commentId = commentId;
         this.commentContent = commentContent;
         this.commentAuthor = commentAuthor;
-        this.isAnonymous = isAnonymous;
+        this.commentIsAnonymous = commentIsAnonymous;
         this.parentCommentId = parentCommentId;
         this.commentUploadTime = commentUploadTime;
     }
-    public CommentInfo(String commentId, String commentContent, String commentAuthor, boolean isAnonymous, Timestamp commentUploadTime) {
+    public CommentInfo(String commentId, String commentContent, String commentAuthor, boolean commentIsAnonymous, Timestamp commentUploadTime) {
         this.commentId = commentId;
         this.commentContent = commentContent;
         this.commentAuthor = commentAuthor;
-        this.isAnonymous = isAnonymous;
+        this.commentIsAnonymous = commentIsAnonymous;
         this.commentUploadTime = commentUploadTime;
     }
 
@@ -60,12 +60,12 @@ public class CommentInfo {
         this.commentAuthor = commentAuthor;
     }
 
-    public boolean isAnonymous() {
-        return this.isAnonymous;
+    public boolean getCommentIsAnonymous() {
+        return this.commentIsAnonymous;
     }
 
-    public void setAnonymous(boolean anonymous) {
-        this.isAnonymous = anonymous;
+    public void setCommentIsAnonymous(boolean commentIsAnonymous) {
+        this.commentIsAnonymous = commentIsAnonymous;
     }
 
     public String getParentCommentId() {

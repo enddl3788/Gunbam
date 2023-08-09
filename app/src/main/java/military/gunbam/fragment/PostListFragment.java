@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +33,7 @@ public class PostListFragment extends Fragment {
     private PostAdapter postAdapter;
     private List<WriteInfo> postList;
     private FirebaseFirestore firestore;
+    private ProgressBar progressBar;
 
     @Override
     public void onResume() {
@@ -50,12 +53,15 @@ public class PostListFragment extends Fragment {
         postAdapter = new PostAdapter(postList);
         recyclerView.setAdapter(postAdapter);
 
+        progressBar = view.findViewById(R.id.postListProgressBar);
+
         firestore = FirebaseFirestore.getInstance();
 
         return view;
     }
 
     private void loadPosts() {
+        progressBar.setVisibility(View.VISIBLE); // 프로그레스 바를 보이도록 설정
         firestore.collection("posts")
                 .orderBy("uploadTime", Query.Direction.DESCENDING)
                 //.limit(10)    // 게시물 개수 제한
@@ -103,6 +109,7 @@ public class PostListFragment extends Fragment {
                         } else {
                             // Handle error
                         }
+                        progressBar.setVisibility(View.GONE); // 프로그레스 바를 보이도록 설정
                     }
                 });
     }

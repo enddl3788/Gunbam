@@ -1,5 +1,7 @@
 package military.gunbam.activity;
 
+import static military.gunbam.fragment.CommentListFragment.loadComments;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,6 +32,8 @@ import java.util.Locale;
 
 import military.gunbam.CommentInfo;
 import military.gunbam.R;
+import military.gunbam.fragment.CommentListFragment;
+import military.gunbam.fragment.PostListFragment;
 
 public class ViewPostActivity extends BasicActivity {
 
@@ -67,6 +71,11 @@ public class ViewPostActivity extends BasicActivity {
 
         // Get the post ID from the intent
         String postId = getIntent().getStringExtra("postId");
+
+        CommentListFragment fragment = CommentListFragment.newInstance(postId);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.commentListFragment, fragment)
+                .commit();
 
         // Retrieve the post details from Firestore
         firestore.collection("posts").document(postId)
@@ -127,17 +136,11 @@ public class ViewPostActivity extends BasicActivity {
                     String postId = getIntent().getStringExtra("postId");
                     String commentContent = commentEditText.getText().toString();
                     String commentAuthor;
+                    Timestamp commentUploadTime = Timestamp.now();
 
                     boolean isAnonymous = anonymousCheckBox.isChecked(); // Get the state of the anonymous checkbox
 
-                    if (isAnonymous) {
-                        commentAuthor = "익명"; // If anonymous, set comment author as "익명"
-                    } else {
-                        // Get the current user's UID as the comment author
-                        commentAuthor = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    }
-
-                    Timestamp commentUploadTime = Timestamp.now();
+                    commentAuthor = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                     if (!TextUtils.isEmpty(commentContent)) {
                         CommentInfo newComment = new CommentInfo(postId, commentContent, commentAuthor, isAnonymous, null, commentUploadTime);
@@ -150,6 +153,7 @@ public class ViewPostActivity extends BasicActivity {
                                     public void onSuccess(DocumentReference documentReference) {
                                         startToast("댓글이 작성되었습니다.");
                                         commentEditText.setText(""); // Clear the comment input
+                                        loadComments(postId);
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -158,6 +162,8 @@ public class ViewPostActivity extends BasicActivity {
                                         startToast("댓글 작성에 실패했습니다.");
                                     }
                                 });
+                    } else {
+                        startToast("댓글을 입력해주세요.");
                     }
                     break;
                 }

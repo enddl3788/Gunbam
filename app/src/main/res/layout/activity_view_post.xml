@@ -57,7 +57,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/recommendation" />
+        android:text="@string/recommendation"
+        android:layout_marginBottom="16dp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -100,10 +101,15 @@
                 tools:ignore="ImageContrastCheck"
                 android:id="@+id/postCommentButton"/>
 
-
         </LinearLayout>
-
-
     </androidx.cardview.widget.CardView>
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/commentListFragment"
+        android:name="military.gunbam.fragment.CommentListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout = "@layout/fragment_comment"
+        android:layout_below = "@+id/mainAppTitleTextView"
+        android:layout_marginTop="10dp"/>
 </LinearLayout>

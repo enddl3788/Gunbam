@@ -1,6 +1,7 @@
 package military.gunbam.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -26,14 +30,19 @@ import military.gunbam.R;
 import military.gunbam.adapter.CommentAdapter;
 
 public class CommentListFragment extends Fragment {
+    private static final String TAG = "CommentListFragment";
     private RecyclerView commentRecyclerView;
-    private CommentAdapter commentAdapter;
-    private List<CommentInfo> commentList;
-    private ProgressBar progressBar;
-    private FirebaseFirestore firestore;
+    private static CommentAdapter commentAdapter;
+    private static List<CommentInfo> commentList;
+    private static ProgressBar progressBar;
+    private static FirebaseFirestore firestore;
 
-    public CommentListFragment() {
-        // Required empty public constructor
+    public static CommentListFragment newInstance(String postId) {
+        CommentListFragment fragment = new CommentListFragment();
+        Bundle args = new Bundle();
+        args.putString("postId", postId);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -53,15 +62,22 @@ public class CommentListFragment extends Fragment {
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         commentRecyclerView.setAdapter(commentAdapter);
 
-        loadComments();
-
+        Bundle args = getArguments();
+        if (args != null) {
+            String postId = args.getString("postId");
+            if (postId != null) {
+                loadComments(postId);
+            }
+        }
         return view;
     }
 
-    private void loadComments() {
+    public static void loadComments(String postId) {
         progressBar.setVisibility(View.VISIBLE); // 프로그레스 바를 보이도록 설정
 
         firestore.collection("comments")
+                .whereEqualTo("commentId", postId)
+                .orderBy("commentUploadTime", Query.Direction.DESCENDING) // 색인 사용
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -72,15 +88,34 @@ public class CommentListFragment extends Fragment {
                                 String commentId = document.getId();
                                 String commentContent = document.getString("commentContent");
                                 String commentAuthor = document.getString("commentAuthor");
-                                boolean isAnonymous = document.getBoolean("isAnonymous"); // 익명 여부 가져오기
+                                boolean commentIsAnonymous = document.getBoolean("commentIsAnonymous"); // 익명 여부 가져오기
                                 String parentCommentId = document.getString("parentCommentId"); // 부모 댓글 ID 가져오기
                                 Timestamp commentUploadTime = document.getTimestamp("commentUploadTime");
 
-                                // CommentInfo 객체 생성
-                                CommentInfo commentInfo = new CommentInfo(commentId, commentContent, commentAuthor, isAnonymous, parentCommentId, commentUploadTime);
-                                commentList.add(commentInfo);
+                                firestore.collection("users")
+                                        .document(commentAuthor)
+                                        .get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot userDocument) {
+                                                if (userDocument.exists()) {
+                                                    String nickName = userDocument.getString("nickName");
+
+                                                    // Create WriteInfo object based on the condition
+                                                    CommentInfo commentInfo;
+                                                    if (commentIsAnonymous) {
+                                                        nickName = "익명";
+                                                        commentInfo = new CommentInfo(commentId, commentContent, nickName, commentIsAnonymous, parentCommentId, commentUploadTime);
+                                                    } else {
+                                                        commentInfo = new CommentInfo(commentId, commentContent, nickName, commentIsAnonymous, parentCommentId, commentUploadTime);
+                                                    }
+                                                    commentList.add(commentInfo);
+                                                    commentAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
+
                             }
-                            commentAdapter.notifyDataSetChanged();
                         } else {
                             // Handle error
                         }
