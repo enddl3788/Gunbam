@@ -10,6 +10,18 @@ public class MemberInfo {
     private String rank;
     private String draftUrl;
 
+    /**
+     * 생성자 메서드: MemberInfo 객체를 생성하는 역할을 수행합니다.
+     *
+     * @param nickName       닉네임 정보
+     * @param name           이름 정보
+     * @param phoneNumber    전화번호 정보
+     * @param birthDate      생년월일 정보
+     * @param joinDate       입대일 정보 (선택)
+     * @param dischargeDate  전역일 정보 (선택)
+     * @param rank           사용자 등급 정보
+     * @param draftUrl       징병 서류 URL 정보 (선택)
+     */
     public MemberInfo(String nickName, String name, String phoneNumber, String birthDate, String joinDate, String dischargeDate, String rank, String draftUrl){
         this.nickName = nickName;
         this.name = name;

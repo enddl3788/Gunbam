@@ -1,12 +1,13 @@
 package military.gunbam.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import military.gunbam.R;
+import military.gunbam.fragment.PostListFragment;
 
 public class MainActivity extends BasicActivity {
 
@@ -78,4 +80,5 @@ public class MainActivity extends BasicActivity {
         Intent intent = new Intent(this, c);
         startActivity(intent);
     }
+
 }

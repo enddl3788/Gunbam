@@ -3,6 +3,7 @@ package military.gunbam.activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -10,10 +11,14 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Date;
+
 import military.gunbam.R;
 import military.gunbam.WriteInfo;
 
@@ -42,17 +47,26 @@ public class WritePostActivity extends BasicActivity{
         }
     };
 
+
     private void postUpdate() {
         final String title = ((EditText)findViewById(R.id.titleEditText)).getText().toString();
         final String contents = ((EditText)findViewById(R.id.contentsEditText)).getText().toString();
+        final int recommendationCount = 0;
+
+        // 익명 체크박스 상태 가져오기
+        CheckBox anonymousCheckBox = findViewById(R.id.writePostAnonymousCheckBox);
+        final boolean isAnonymous = anonymousCheckBox.isChecked();
 
         // 유효성 검사
         if (title.length() == 0 || contents.length() == 0) {
             startToast("모든 정보를 입력해주세요.");
         } else {
             user = FirebaseAuth.getInstance().getCurrentUser();
-            WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid());
+            // 업로드 시간을 현재 시간으로 설정
+            Timestamp uploadTime = new Timestamp(new Date());
+            WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid(), recommendationCount, isAnonymous, uploadTime);
             uploader(writeInfo);
+            startToast("게시물 등록을 성공하였습니다.");
         }
     }
 
