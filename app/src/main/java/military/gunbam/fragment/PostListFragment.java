@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public class PostListFragment extends Fragment {
 
     private void loadPosts() {
         firestore.collection("posts")
+                .orderBy("uploadTime", Query.Direction.DESCENDING)
+                //.limit(10)    // 게시물 개수 제한
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -72,28 +75,30 @@ public class PostListFragment extends Fragment {
                                 // Assuming "uploadTime" is a Firestore Timestamp field
                                 Timestamp uploadTime = document.getTimestamp("uploadTime");
 
-                                // Fetch the nickname from the "users" collection using the publisherUid
-                                if (isAnonymous) {
-                                    String nickName = "익명";
-                                    WriteInfo writeInfo = new WriteInfo(id, title, contents, nickName, recommendationCount, isAnonymous, uploadTime);
-                                    postList.add(writeInfo);
-                                    postAdapter.notifyDataSetChanged();
-                                } else {
-                                    firestore.collection("users")
-                                            .document(publisherUid)
-                                            .get()
-                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onSuccess(DocumentSnapshot userDocument) {
-                                                    if (userDocument.exists()) {
-                                                        String nickName = userDocument.getString("nickName");
-                                                        WriteInfo writeInfo = new WriteInfo(id, title, contents, nickName, recommendationCount, isAnonymous, uploadTime);
-                                                        postList.add(writeInfo);
-                                                        postAdapter.notifyDataSetChanged();
+
+                                firestore.collection("users")
+                                        .document(publisherUid)
+                                        .get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot userDocument) {
+                                                if (userDocument.exists()) {
+                                                    String nickName = userDocument.getString("nickName");
+
+                                                    // Create WriteInfo object based on the condition
+                                                    WriteInfo writeInfo;
+                                                    if (isAnonymous) {
+                                                        nickName = "익명";
+                                                        writeInfo = new WriteInfo(id, title, contents, nickName, recommendationCount, isAnonymous, uploadTime);
+                                                    } else {
+                                                        writeInfo = new WriteInfo(id, title, contents, nickName, recommendationCount, isAnonymous, uploadTime);
                                                     }
+                                                    postList.add(writeInfo);
+                                                    postAdapter.notifyDataSetChanged();
                                                 }
-                                            });
-                                }
+                                            }
+                                        });
+
                             }
                         } else {
                             // Handle error

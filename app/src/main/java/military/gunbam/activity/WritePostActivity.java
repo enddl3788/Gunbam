@@ -33,6 +33,7 @@ public class WritePostActivity extends BasicActivity{
         setContentView(R.layout.activity_write_post);
 
         findViewById(R.id.writePostButton).setOnClickListener(onClickListener);
+        findViewById(R.id.writePostBackButton).setOnClickListener(onClickListener);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -41,6 +42,10 @@ public class WritePostActivity extends BasicActivity{
             switch (view.getId()) {
                 case R.id.writePostButton:
                     postUpdate();
+                    finish();
+                    break;
+
+                case R.id.writePostBackButton:
                     finish();
                     break;
             }

@@ -1,7 +1,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="@string/back"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        android:id="@+id/viewPostBackButton"/>
 
     <TextView
         android:id="@+id/postViewPublisherTextView"
@@ -38,7 +48,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/post_content" />
+        android:text="@string/content" />
 
     <TextView
         android:id="@+id/postViewRecommendationCountTextView"
@@ -49,6 +59,51 @@
         android:layout_marginEnd="16dp"
         android:text="@string/recommendation" />
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="15dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <CheckBox
+                android:id="@+id/commentAnonymousCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/anonymous"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <EditText
+                android:id="@+id/commentEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="@string/comment_hint"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:minHeight="48dp"
+                android:textColorHint="#757575"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/transparent"
+                android:contentDescription="@string/ok"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_send_24"
+                tools:ignore="ImageContrastCheck"
+                android:id="@+id/postCommentButton"/>
+
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>
