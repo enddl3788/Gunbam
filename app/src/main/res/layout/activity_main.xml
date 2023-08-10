@@ -39,7 +39,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/postListFragment"
-        android:name="military.gunbam.fragment.PostListFragment"
+        android:name="military.gunbam.view.fragment.PostListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout = "@layout/fragment_post_list"
