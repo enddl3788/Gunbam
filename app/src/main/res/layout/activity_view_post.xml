@@ -110,7 +110,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/commentListFragment"
-            android:name="military.gunbam.fragment.CommentListFragment"
+            android:name="military.gunbam.view.fragment.CommentListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout = "@layout/fragment_comment"
