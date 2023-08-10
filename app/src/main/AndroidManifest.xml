@@ -23,7 +23,7 @@
         android:theme="@style/Theme.Gunbam"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".view.activity.MainActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
@@ -32,15 +32,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity"/>
-        <activity android:name=".activity.SignUpActivity"/>
-        <activity android:name=".activity.PasswordResetActivity"/>
-        <activity android:name=".activity.MemberInitActivity"/>
-        <activity android:name=".activity.CameraActivity"/>
-        <activity android:name=".activity.GalleryActivity"/>
-        <activity android:name=".activity.BasicActivity"/>
-        <activity android:name=".activity.WritePostActivity"/>
-        <activity android:name=".activity.ViewPostActivity"/>
+        <activity android:name=".view.activity.LoginActivity"/>
+        <activity android:name=".view.activity.SignUpActivity"/>
+        <activity android:name=".view.activity.PasswordResetActivity"/>
+        <activity android:name=".view.activity.MemberInitActivity"/>
+        <activity android:name=".view.activity.CameraActivity"/>
+        <activity android:name=".view.activity.GalleryActivity"/>
+        <activity android:name=".view.activity.BasicActivity"/>
+        <activity android:name=".view.activity.WritePostActivity"/>
+        <activity android:name=".view.activity.ViewPostActivity"/>
     </application>
 
 </manifest>
