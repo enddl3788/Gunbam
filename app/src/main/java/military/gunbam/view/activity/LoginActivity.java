@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import military.gunbam.R;
 
+import static military.gunbam.utils.Util.showToast;
+
 public class LoginActivity extends BasicActivity {
     private static final String TAG = "LoginActivity";
     private FirebaseAuth mAuth;
@@ -86,7 +88,7 @@ public class LoginActivity extends BasicActivity {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                    // startToast("로그인 성공: " + user.getEmail());
+                                    // showToast(LoginActivity.this, "로그인 성공: " + user.getEmail());
                                     startActivity(MainActivity.class);
                                 } else {
                                     // If sign in fails, display a message to the user.
@@ -94,13 +96,13 @@ public class LoginActivity extends BasicActivity {
                                         try {
                                             throw task.getException();
                                         } catch (FirebaseAuthInvalidUserException e) {
-                                            startToast("가입되지 않은 이메일 주소입니다. 회원가입해주세요.");
+                                            showToast(LoginActivity.this, "가입되지 않은 이메일 주소입니다. 회원가입해주세요.");
                                         } catch (FirebaseAuthInvalidCredentialsException e) {
-                                            startToast("이메일 주소 또는 비밀번호가 잘못되었습니다.");
+                                            showToast(LoginActivity.this, "이메일 주소 또는 비밀번호가 잘못되었습니다.");
                                         } catch (FirebaseNetworkException e) {
-                                            startToast("인터넷 연결 상태를 확인해주세요.");
+                                            showToast(LoginActivity.this, "인터넷 연결 상태를 확인해주세요.");
                                         } catch (Exception e) {
-                                            startToast("로그인 도중 오류가 발생했습니다. 다시 시도해주세요.");
+                                            showToast(LoginActivity.this, "로그인 도중 오류가 발생했습니다. 다시 시도해주세요.");
                                             Log.e(TAG, "로그인 실패", e);
                                         }
                                     }
@@ -108,15 +110,11 @@ public class LoginActivity extends BasicActivity {
                             }
                         });
             } else {
-                startToast("비밀번호는 최소 6자 이상이고, 영어와 숫자를 포함해야 합니다.");
+                showToast(LoginActivity.this, "비밀번호는 최소 6자 이상이고, 영어와 숫자를 포함해야 합니다.");
             }
         } else {
-            startToast("이메일 또는 비밀번호를 입력해주세요.");
+            showToast(LoginActivity.this, "이메일 또는 비밀번호를 입력해주세요.");
         }
-    }
-
-    private void startToast(String msg) {
-        Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
     }
 
     private void startActivity(Class c) {

@@ -37,6 +37,8 @@ import java.io.InputStream;
 import military.gunbam.R;
 import military.gunbam.model.MemberInfo;
 
+import static military.gunbam.utils.Util.showToast;
+
 public class MemberInitActivity extends BasicActivity {
     private static final String TAG = "MemberInitActivity";
     private ImageView draftImageView;
@@ -61,7 +63,7 @@ public class MemberInitActivity extends BasicActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_init);
 
-        startToast("회원정보를 입력해주세요.");
+        showToast(MemberInitActivity.this, "회원정보를 입력해주세요.");
 
         draftImageView = findViewById(R.id.draftImageView);
         draftImageView.setOnClickListener(onClickListener);
@@ -119,7 +121,7 @@ public class MemberInitActivity extends BasicActivity {
 
                         if (ActivityCompat.shouldShowRequestPermissionRationale(MemberInitActivity.this,
                                 Manifest.permission.CAMERA)) {
-                            startToast("카메라 권한이 필요합니다.\n권한을 허용해 주세요.");
+                            showToast(MemberInitActivity.this, "카메라 권한이 필요합니다.\n권한을 허용해 주세요.");
                         }
 
                         ActivityCompat.requestPermissions(MemberInitActivity.this,
@@ -136,7 +138,7 @@ public class MemberInitActivity extends BasicActivity {
 
                         if (ActivityCompat.shouldShowRequestPermissionRationale(MemberInitActivity.this,
                                 Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                            startToast("외부 저장소 읽기 권한이 필요합니다.\n권한을 허용해 주세요.");
+                            showToast(MemberInitActivity.this, "외부 저장소 읽기 권한이 필요합니다.\n권한을 허용해 주세요.");
                         }
 
                         ActivityCompat.requestPermissions(MemberInitActivity.this,
@@ -158,7 +160,7 @@ public class MemberInitActivity extends BasicActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startActivity(GalleryActivity.class);
                 } else {
-                    startToast("파일 읽기 권한을 허용해 주세요.");
+                    showToast(MemberInitActivity.this, "파일 읽기 권한을 허용해 주세요.");
                 }
                 break;
             }
@@ -166,7 +168,7 @@ public class MemberInitActivity extends BasicActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startActivity(CameraActivity.class);
                 } else {
-                    startToast("카메라 권한을 허용해 주세요.");
+                    showToast(MemberInitActivity.this, "카메라 권한을 허용해 주세요.");
                 }
                 break;
             }
@@ -187,19 +189,19 @@ public class MemberInitActivity extends BasicActivity {
 
         // 유효성 검사
         if (nickName.length() == 0 || name.length() == 0 || phoneNumber.length() < 0 || birthDate.length() < 0) {
-            startToast("모든 회원정보를 입력해주세요.");
+            showToast(MemberInitActivity.this, "모든 회원정보를 입력해주세요.");
         } else if (joinDate.length() != 6 && joinDate.length() != 0) {
-            startToast("올바르지 않은 입대일입니다.\nex)230101");
+            showToast(MemberInitActivity.this, "올바르지 않은 입대일입니다.\nex)230101");
         } else if (dischargeDate.length() != 6 && dischargeDate.length() != 0) {
-            startToast("올바르지 않은 제대일입니다.\nex)250101");
+            showToast(MemberInitActivity.this, "올바르지 않은 제대일입니다.\nex)250101");
         } else if (phoneNumber.length() > 11 || phoneNumber.length() < 10) {
-            startToast("유효하지 않은 전화번호입니다.\n'-' 없이 숫자만 입력해주세요.");
+            showToast(MemberInitActivity.this, "유효하지 않은 전화번호입니다.\n'-' 없이 숫자만 입력해주세요.");
         } else if (birthDate.length() != 6) {
-            startToast("생년월일은 6자리로 입력해주세요.");
+            showToast(MemberInitActivity.this, "생년월일은 6자리로 입력해주세요.");
         } else if (nickName.length() > 0 && isNicknameValid(nickName)) {
-            startToast("불건전한 닉네임입니다.\n다른 닉네임을 입력해주세요.");
+            showToast(MemberInitActivity.this, "불건전한 닉네임입니다.\n다른 닉네임을 입력해주세요.");
         } else if (!(isStringValid(nickName) && isStringValid(name))) {
-            startToast("닉네임과 이름에는 특수문자를 포함하지 않아야 합니다.");
+            showToast(MemberInitActivity.this, "닉네임과 이름에는 특수문자를 포함하지 않아야 합니다.");
         } else {
             // 회원정보가 유효한 경우 처리
             FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -230,12 +232,12 @@ public class MemberInitActivity extends BasicActivity {
                                 MemberInfo memberInfo = new MemberInfo(nickName, name, phoneNumber, birthDate, joinDate, dischargeDate, rank, downloadUri.toString());
                                 uploader(memberInfo);
                             } else {
-                                startToast("회원정보 등록에 실패하였습니다.");
+                                showToast(MemberInitActivity.this, "회원정보 등록에 실패하였습니다.");
                             }
                         }
                     });
                 }catch (FileNotFoundException e){
-                    startToast("사진을 찾을 수 없습니다.");
+                    showToast(MemberInitActivity.this, "사진을 찾을 수 없습니다.");
                 }
             }
 
@@ -251,23 +253,19 @@ public class MemberInitActivity extends BasicActivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            startToast("회원정보 등록에 성공하였습니다.");
+                            showToast(MemberInitActivity.this, "회원정보 등록에 성공하였습니다.");
                             finish();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            startToast("회원정보 등록에 실패하였습니다.");
+                            showToast(MemberInitActivity.this, "회원정보 등록에 실패하였습니다.");
                         }
                     });
         } else {
-            startToast("로그인 상태를 확인할 수 없습니다. 다시 로그인해주세요.");
+            showToast(MemberInitActivity.this, "로그인 상태를 확인할 수 없습니다. 다시 로그인해주세요.");
         }
-    }
-
-    private void startToast(String msg) {
-        Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
     }
 
     private void startActivity(Class c) {

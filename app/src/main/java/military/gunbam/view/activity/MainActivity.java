@@ -22,15 +22,44 @@ public class MainActivity extends BasicActivity {
     private static final String TAG = "MainActivity";
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        init();
 
+        findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
+        findViewById(R.id.mainFloatingActionButton).setOnClickListener(onClickListener);
+    }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.logoutButton:
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(LoginActivity.class);
+                    break;
+                case R.id.mainFloatingActionButton:
+                    startActivity(military.gunbam.view.activity.WritePostActivity.class);
+                    break;
+            }
+        }
+    };
+    private void init(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             startActivity(LoginActivity.class);
-            finish();
         } else {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("users").document(user.getUid());
@@ -53,26 +82,7 @@ public class MainActivity extends BasicActivity {
                 }
             });
         }
-
-        findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
-        findViewById(R.id.mainFloatingActionButton).setOnClickListener(onClickListener);
     }
-
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.logoutButton:
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(LoginActivity.class);
-                    break;
-                case R.id.mainFloatingActionButton:
-                    startActivity(military.gunbam.view.activity.WritePostActivity.class);
-                    break;
-            }
-        }
-    };
-
     private void startActivity(Class c) {
         Intent intent = new Intent(this, c);
         startActivity(intent);

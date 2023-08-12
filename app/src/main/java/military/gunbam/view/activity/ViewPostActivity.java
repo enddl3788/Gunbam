@@ -1,5 +1,6 @@
 package military.gunbam.view.activity;
 
+import static military.gunbam.utils.Util.showToast;
 import static military.gunbam.view.fragment.CommentListFragment.loadComments;
 
 import android.os.Bundle;
@@ -147,7 +148,7 @@ public class ViewPostActivity extends BasicActivity {
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
-                                        startToast("댓글이 작성되었습니다.");
+                                        showToast(ViewPostActivity.this, "댓글이 작성되었습니다.");
                                         commentEditText.setText(""); // Clear the comment input
                                         loadComments(postId);
                                     }
@@ -155,20 +156,17 @@ public class ViewPostActivity extends BasicActivity {
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        startToast("댓글 작성에 실패했습니다.");
+                                        showToast(ViewPostActivity.this, "댓글 작성에 실패했습니다.");
                                     }
                                 });
                     } else {
-                        startToast("댓글을 입력해주세요.");
+                        showToast(ViewPostActivity.this, "댓글을 입력해주세요.");
                     }
                     break;
                 }
             }
         }
     };
-    private void startToast(String msg) {
-        Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
-    }
 }
 
 
