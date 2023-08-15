@@ -270,10 +270,7 @@ public class MemberInitActivity extends BasicActivity {
         Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
     }
 
-    private void startActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        startActivityForResult(intent, 0);
-    }
+
 
     // 금칙어 필터링 함수
     private boolean isNicknameValid(String nickname) {

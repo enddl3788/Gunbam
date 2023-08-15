@@ -47,7 +47,7 @@ public class PasswordResetActivity extends BasicActivity {
                     send();
                     break;
                 case R.id.gotoLoginButton:
-                    startActivity(LoginActivity.class);
+                    startNewActivityAndClearStack(LoginActivity.class);
                     break;
             }
         }
@@ -83,9 +83,4 @@ public class PasswordResetActivity extends BasicActivity {
         Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
     }
 
-    private void startActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
 }

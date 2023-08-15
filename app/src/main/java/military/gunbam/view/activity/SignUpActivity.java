@@ -49,7 +49,7 @@ public class SignUpActivity extends BasicActivity {
                     signUp();
                     break;
                 case R.id.gotoLoginButton:
-                    startActivity(LoginActivity.class);
+                    startNewActivityAndClearStack(LoginActivity.class);
                     break;
             }
         }
@@ -77,7 +77,7 @@ public class SignUpActivity extends BasicActivity {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     startToast("회원가입을 축하드립니다.");
-                                    startActivity(MainActivity.class);
+                                    startNewActivityAndClearStack(MainActivity.class);
                                 } else {
                                     if (task.getException() != null) {
                                         try {
@@ -113,9 +113,4 @@ public class SignUpActivity extends BasicActivity {
         Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
     }
 
-    private void startActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
 }

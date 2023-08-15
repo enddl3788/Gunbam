@@ -4,7 +4,6 @@ plugins {
     // 구글서비스 추가
     id 'com.google.gms.google-services'
 }
-
 android {
     namespace 'military.gunbam'
     compileSdk 32
@@ -28,6 +27,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dataBinding{
+        enabled = true
     }
 }
 
