@@ -1,5 +1,7 @@
 package military.gunbam.view.activity;
 
+import static military.gunbam.utils.Util.showToast;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -64,14 +66,14 @@ public class WritePostActivity extends BasicActivity{
 
         // 유효성 검사
         if (title.length() == 0 || contents.length() == 0) {
-            startToast("모든 정보를 입력해주세요.");
+            showToast(WritePostActivity.this, "모든 정보를 입력해주세요.");
         } else {
             user = FirebaseAuth.getInstance().getCurrentUser();
             // 업로드 시간을 현재 시간으로 설정
             Timestamp uploadTime = new Timestamp(new Date());
             WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid(), recommendationCount, isAnonymous, uploadTime);
             uploader(writeInfo);
-            startToast("게시물 등록을 성공하였습니다.");
+            showToast(WritePostActivity.this, "게시물 등록을 성공하였습니다.");
         }
     }
 
@@ -95,11 +97,7 @@ public class WritePostActivity extends BasicActivity{
                 });
 
         } else {
-            startToast("로그인 상태를 확인할 수 없습니다. 다시 로그인해주세요.");
+            showToast(WritePostActivity.this, "로그인 상태를 확인할 수 없습니다. 다시 로그인해주세요.");
         }
-    }
-
-    private void startToast(String msg) {
-        Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
     }
 }

@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import military.gunbam.R;
 
+import static military.gunbam.utils.Util.showToast;
+
 public class PasswordResetActivity extends BasicActivity {
     private static final String TAG = "PasswordResetActivity";
     private FirebaseAuth mAuth;
@@ -68,19 +70,14 @@ public class PasswordResetActivity extends BasicActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                startToast("이메일로 비밀번호 재설정 링크를 보냈습니다.");
+                                showToast(PasswordResetActivity.this, "이메일로 비밀번호 재설정 링크를 보냈습니다.");
                             } else {
-                                startToast("존재하지 않거나 유효하지 않은 이메일입니다.");
+                                showToast(PasswordResetActivity.this, "존재하지 않거나 유효하지 않은 이메일입니다.");
                             }
                         }
                     });
         } else {
-            startToast("이메일을 입력해주세요.");
+            showToast(PasswordResetActivity.this, "이메일을 입력해주세요.");
         }
     }
-
-    private void startToast(String msg) {
-        Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
-    }
-
 }

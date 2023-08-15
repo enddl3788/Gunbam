@@ -1,5 +1,7 @@
 package military.gunbam.view.activity;
 
+import static military.gunbam.utils.Util.showToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -76,41 +78,36 @@ public class SignUpActivity extends BasicActivity {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                    startToast("회원가입을 축하드립니다.");
+                                    showToast(SignUpActivity.this, "회원가입을 축하드립니다.");
                                     startNewActivityAndClearStack(MainActivity.class);
                                 } else {
                                     if (task.getException() != null) {
                                         try {
                                             throw task.getException();
                                         } catch (FirebaseAuthWeakPasswordException e) {
-                                            startToast("비밀번호는 6자 이상이어야 합니다.");
+                                            showToast(SignUpActivity.this, "비밀번호는 6자 이상이어야 합니다.");
                                         } catch (FirebaseAuthInvalidCredentialsException e) {
-                                            startToast("유효한 이메일 주소를 입력해주세요.");
+                                            showToast(SignUpActivity.this, "유효한 이메일 주소를 입력해주세요.");
                                         } catch (FirebaseAuthUserCollisionException e) {
-                                            startToast("이미 등록된 이메일 주소입니다. 다른 이메일을 사용해주세요.");
+                                            showToast(SignUpActivity.this, "이미 등록된 이메일 주소입니다. 다른 이메일을 사용해주세요.");
                                         } catch (FirebaseAuthException e) {
-                                            startToast("회원가입 도중 오류가 발생했습니다. 다시 시도해주세요.");
+                                            showToast(SignUpActivity.this, "회원가입 도중 오류가 발생했습니다. 다시 시도해주세요.");
                                             Log.e(TAG, "회원가입 실패", e);
                                         } catch (Exception e) {
-                                            startToast("알 수 없는 오류가 발생했습니다. 다시 시도해주세요.");
+                                            showToast(SignUpActivity.this, "알 수 없는 오류가 발생했습니다. 다시 시도해주세요.");
                                             Log.e(TAG, "알 수 없는 오류", e);
                                         }
                                     }
                                 }
                             });
                 } else {
-                    startToast("비밀번호는 최소 6자 이상이고, 영어와 숫자를 포함해야 합니다.");
+                    showToast(SignUpActivity.this, "비밀번호는 최소 6자 이상이고, 영어와 숫자를 포함해야 합니다.");
                 }
             } else {
-                startToast("비밀번호가 일치하지않습니다.");
+                showToast(SignUpActivity.this, "비밀번호가 일치하지않습니다.");
             }
         } else {
-            startToast("이메일 또는 비밀번호를 입력해주세요.");
+            showToast(SignUpActivity.this, "이메일 또는 비밀번호를 입력해주세요.");
         }
     }
-
-    private void startToast(String msg) {
-        Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
-    }
-
 }
