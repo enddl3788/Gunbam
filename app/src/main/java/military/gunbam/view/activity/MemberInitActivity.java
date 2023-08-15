@@ -268,11 +268,6 @@ public class MemberInitActivity extends BasicActivity {
         }
     }
 
-    private void startActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        startActivityForResult(intent, 0);
-    }
-
     // 금칙어 필터링 함수
     private boolean isNicknameValid(String nickname) {
         for (String forbiddenWord : forbiddenWords) {

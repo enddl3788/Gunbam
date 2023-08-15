@@ -51,7 +51,7 @@ public class SignUpActivity extends BasicActivity {
                     signUp();
                     break;
                 case R.id.gotoLoginButton:
-                    startActivity(LoginActivity.class);
+                    startNewActivityAndClearStack(LoginActivity.class);
                     break;
             }
         }
@@ -79,7 +79,7 @@ public class SignUpActivity extends BasicActivity {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     showToast(SignUpActivity.this, "회원가입을 축하드립니다.");
-                                    startActivity(MainActivity.class);
+                                    startNewActivityAndClearStack(MainActivity.class);
                                 } else {
                                     if (task.getException() != null) {
                                         try {
@@ -109,11 +109,5 @@ public class SignUpActivity extends BasicActivity {
         } else {
             showToast(SignUpActivity.this, "이메일 또는 비밀번호를 입력해주세요.");
         }
-    }
-
-    private void startActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
     }
 }

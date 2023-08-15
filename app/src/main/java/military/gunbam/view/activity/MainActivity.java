@@ -83,9 +83,4 @@ public class MainActivity extends BasicActivity {
             });
         }
     }
-    private void startActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        startActivity(intent);
-    }
-
 }

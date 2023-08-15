@@ -49,7 +49,7 @@ public class PasswordResetActivity extends BasicActivity {
                     send();
                     break;
                 case R.id.gotoLoginButton:
-                    startActivity(LoginActivity.class);
+                    startNewActivityAndClearStack(LoginActivity.class);
                     break;
             }
         }
@@ -79,11 +79,5 @@ public class PasswordResetActivity extends BasicActivity {
         } else {
             showToast(PasswordResetActivity.this, "이메일을 입력해주세요.");
         }
-    }
-
-    private void startActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
     }
 }
