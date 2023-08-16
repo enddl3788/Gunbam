@@ -1,18 +1,20 @@
 package military.gunbam.view.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
 import military.gunbam.R;
+import military.gunbam.model.LoginResult;
+import military.gunbam.model.SignUpResult;
 import military.gunbam.viewmodel.SignUpViewModel;
 
 public class SignUpActivity extends BasicActivity {
 
-    private static final String TAG = "SignUpActivity";
     private SignUpViewModel signUpViewModel;
 
     @Override
@@ -22,39 +24,41 @@ public class SignUpActivity extends BasicActivity {
 
         signUpViewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
 
-        findViewById(R.id.signUpButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signUp();
-            }
-        });
+        findViewById(R.id.signUpButton).setOnClickListener(onClickListener);
+        findViewById(R.id.gotoLoginButton).setOnClickListener(onClickListener);
 
-        findViewById(R.id.gotoLoginButton).setOnClickListener(new View.OnClickListener() {
+        signUpViewModel.getSignUpResultLiveData().observe(this, new Observer<SignUpResult>() {
             @Override
-            public void onClick(View view) {
-                startNewActivityAndClearStack(LoginActivity.class);
+            public void onChanged(SignUpResult signUpResult) {
+                if (signUpResult == null) {
+                    return;
+                }
+
+                if (signUpResult.getError() != null) {
+                    showToast(SignUpActivity.this, signUpResult.getError());
+                }
+
+                if (signUpResult.getSuccess() != null) {
+                    startActivity(MainActivity.class);
+                }
             }
         });
     }
 
-    private void signUp() {
-        String email = ((EditText) findViewById(R.id.emailEditText)).getText().toString();
-        String password = ((EditText) findViewById(R.id.passwordEditText)).getText().toString();
-        String passwordCheck = ((EditText) findViewById(R.id.passwordCheckEditText)).getText().toString();
-
-        signUpViewModel.signUp(email, password, passwordCheck)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        showToast(SignUpActivity.this,"회원가입을 축하드립니다.");
-                        startNewActivityAndClearStack(MainActivity.class);
-                    } else {
-                        Exception exception = task.getException();
-                        if (exception != null) {
-                            String errorMessage = signUpViewModel.getSignUpErrorMessage(exception);
-                            showToast(SignUpActivity.this, errorMessage);
-                            Log.e(TAG, "회원가입 실패", exception);
-                        }
-                    }
-                });
-    }
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.signUpButton:
+                    String email = ((EditText)findViewById(R.id.emailEditText)).getText().toString();
+                    String password = ((EditText)findViewById(R.id.passwordEditText)).getText().toString();
+                    String passwordCheck = ((EditText)findViewById(R.id.passwordCheckEditText)).getText().toString();
+                    signUpViewModel.signUp(email, password, passwordCheck);
+                    break;
+                case R.id.gotoLoginButton:
+                    startNewActivityAndClearStack(LoginActivity.class);
+                    break;
+            }
+        }
+    };
 }

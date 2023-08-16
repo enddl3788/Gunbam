@@ -1,26 +1,33 @@
 package military.gunbam.viewmodel;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseUser;
 
 import military.gunbam.model.SignUpModel;
+import military.gunbam.model.SignUpResult;
 
 public class SignUpViewModel extends ViewModel {
 
     private SignUpModel signUpModel = new SignUpModel();
+    private MutableLiveData<SignUpResult> signUpResultLiveData = new MutableLiveData<>();
 
-    public Task<AuthResult> signUp(String email, String password, String passwordCheck) {
-        return signUpModel.signUp(email, password, passwordCheck);
+    public void signUp(String email, String password, String passwordCheck) {
+        signUpModel.signUp(email, password, passwordCheck, new SignUpModel.SignUpCallback() {
+            @Override
+            public void onSignUpSuccess(FirebaseUser user) {
+                signUpResultLiveData.setValue(new SignUpResult(user));
+            }
+
+            @Override
+            public void onSignUpFailure(String errorMessage) {
+                signUpResultLiveData.setValue(new SignUpResult(errorMessage));
+            }
+        });
     }
 
-    public String getSignUpErrorMessage(Exception exception) {
-        // 모델에서 반환된 예외 메시지를 처리하여 반환
-        if (exception instanceof IllegalArgumentException) {
-            return exception.getMessage();
-        } else {
-            return signUpModel.getSignUpErrorMessage(exception);
-        }
+    public MutableLiveData<SignUpResult> getSignUpResultLiveData() {
+        return signUpResultLiveData;
     }
 }
