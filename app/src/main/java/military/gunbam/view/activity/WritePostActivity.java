@@ -1,13 +1,10 @@
 package military.gunbam.view.activity;
 
-import static military.gunbam.utils.Util.showToast;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 

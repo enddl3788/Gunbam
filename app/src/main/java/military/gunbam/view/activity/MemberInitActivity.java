@@ -37,8 +37,6 @@ import java.io.InputStream;
 import military.gunbam.R;
 import military.gunbam.model.MemberInfo;
 
-import static military.gunbam.utils.Util.showToast;
-
 public class MemberInitActivity extends BasicActivity {
     private static final String TAG = "MemberInitActivity";
     private ImageView draftImageView;

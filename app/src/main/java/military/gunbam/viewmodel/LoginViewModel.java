@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import military.gunbam.model.LoginModel;
 import military.gunbam.model.LoginResult;
+import military.gunbam.view.activity.BasicActivity;
 
 public class LoginViewModel extends ViewModel {
 

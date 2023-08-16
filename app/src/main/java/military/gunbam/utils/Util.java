@@ -15,10 +15,6 @@ public class Util {
     public static final int GALLERY_IMAGE = 0;
     public static final int GALLERY_VIDEO = 1;
 
-    public static void showToast(Activity activity, String msg){
-        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
-    }
-
     /*
     public static boolean isStorageUrl(String url){
         return Patterns.WEB_URL.matcher(url).matches() && url.contains("https://firebasestorage.googleapis.com/v0/b/sns-project-3e2c2.appspot.com/o/post");
