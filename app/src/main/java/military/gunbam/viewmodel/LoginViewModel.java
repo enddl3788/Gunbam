@@ -4,9 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.google.firebase.auth.FirebaseUser;
 
-import military.gunbam.model.LoginModel;
-import military.gunbam.model.LoginResult;
-import military.gunbam.view.activity.BasicActivity;
+import military.gunbam.model.login.LoginModel;
+import military.gunbam.model.login.LoginResult;
 
 public class LoginViewModel extends ViewModel {
 

@@ -9,8 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 
 import military.gunbam.R;
-import military.gunbam.model.LoginResult;
-import military.gunbam.model.SignUpResult;
+import military.gunbam.model.signUp.SignUpResult;
 import military.gunbam.viewmodel.SignUpViewModel;
 
 public class SignUpActivity extends BasicActivity {

@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import military.gunbam.model.SignUpModel;
-import military.gunbam.model.SignUpResult;
+import military.gunbam.model.signUp.SignUpModel;
+import military.gunbam.model.signUp.SignUpResult;
 
 public class SignUpViewModel extends ViewModel {
 

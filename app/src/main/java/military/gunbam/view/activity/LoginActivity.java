@@ -2,7 +2,6 @@ package military.gunbam.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
@@ -10,7 +9,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import military.gunbam.R;
-import military.gunbam.model.LoginResult;
+import military.gunbam.model.login.LoginResult;
 import military.gunbam.viewmodel.LoginViewModel;
 
 public class LoginActivity extends BasicActivity {

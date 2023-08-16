@@ -1,20 +1,20 @@
-package military.gunbam.model;
+package military.gunbam.model.passwordReset;
 
 import com.google.firebase.auth.FirebaseUser;
 
-public class SignUpResult {
-    private FirebaseUser success;
+public class PasswordResetResult {
+    private boolean success;
     private String error;
 
-    public SignUpResult(FirebaseUser success)  {
+    public PasswordResetResult(boolean success) {
         this.success = success;
     }
 
-    public SignUpResult(String error) {
+    public PasswordResetResult(String error) {
         this.error = error;
     }
 
-    public FirebaseUser getSuccess() {
+    public boolean getSuccess() {
         return success;
     }
 

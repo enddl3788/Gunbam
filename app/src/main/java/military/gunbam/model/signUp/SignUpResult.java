@@ -1,17 +1,16 @@
-package military.gunbam.model;
+package military.gunbam.model.signUp;
 
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginResult {
-
+public class SignUpResult {
     private FirebaseUser success;
     private String error;
 
-    public LoginResult(FirebaseUser success) {
+    public SignUpResult(FirebaseUser success)  {
         this.success = success;
     }
 
-    public LoginResult(String error) {
+    public SignUpResult(String error) {
         this.error = error;
     }
 

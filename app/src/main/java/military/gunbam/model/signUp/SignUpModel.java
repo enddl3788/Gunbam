@@ -1,4 +1,4 @@
-package military.gunbam.model;
+package military.gunbam.model.signUp;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -7,12 +7,10 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,7 +29,6 @@ public class SignUpModel {
     }
 
     public void signUp(String email, String password, String passwordCheck, final SignUpModel.SignUpCallback callback) {
-        // 실제 로그인 비즈니스 로직 수행
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(passwordCheck)) {
             String errorMessage = "이메일과 비밀번호를 입력해주세요.";
             callback.onSignUpFailure(errorMessage);
@@ -63,7 +60,7 @@ public class SignUpModel {
                                 } catch (FirebaseNetworkException e) {
                                     errorMessage = "인터넷 연결 상태를 확인해주세요.";
                                 } catch (Exception e) {
-                                    Log.e("LoginModel", "회원가입 실패", e);
+                                    Log.e("SignUpModel", "회원가입 실패", e);
                                 }
                             }
                             callback.onSignUpFailure(errorMessage);
