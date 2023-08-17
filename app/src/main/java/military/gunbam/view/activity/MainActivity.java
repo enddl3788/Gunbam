@@ -3,12 +3,14 @@ package military.gunbam.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -79,6 +81,42 @@ public class MainActivity extends BasicActivity {
                     } else {
                         Log.d(TAG, "get failed with ", task.getException());
                     }
+                }
+            });
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.home:
+                            // 홈버튼 눌렀을때 로직
+                            return true;
+                        case R.id.postList:
+                            /* 예시
+                            UserInfoFragment userInfoFragment = new UserInfoFragment();
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.container, userInfoFragment)
+                                    .commit();
+                             */
+                            return true;
+                        case R.id.myPage:
+                            /*
+
+                             */
+                            return true;
+                        case R.id.tmoSearch:
+                            /*
+
+                             */
+                            return true;
+                        case R.id.report:
+                            /*
+
+                             */
+                            return true;
+                    }
+                    return false;
                 }
             });
         }
