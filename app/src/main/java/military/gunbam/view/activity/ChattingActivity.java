@@ -43,6 +43,7 @@ public class ChattingActivity extends AppCompatActivity {
     private String senderUid;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mAuth.getCurrentUser();
+
     private static final String ADMINISTRATOR_ID1 = "enddl3788@naver.com";
     private static final String ADMINISTRATOR_ID2 = "rickyhee75@naver.com";
     @Override
