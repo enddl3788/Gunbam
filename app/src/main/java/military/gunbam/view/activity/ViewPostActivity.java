@@ -1,6 +1,5 @@
 package military.gunbam.view.activity;
 
-import static military.gunbam.utils.Util.showToast;
 import static military.gunbam.view.fragment.CommentListFragment.loadComments;
 
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
