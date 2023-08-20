@@ -40,5 +40,5 @@ public class ChatData implements Serializable {
     }
     public String getUserName() { return userName; }
     public String getUserEmail() {return userEmail; }
-    public String getSending_time() { return String.valueOf(timestamp); }
+    //public String getSending_time() { return String.valueOf(timestamp); }
 }

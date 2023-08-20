@@ -1,5 +1,7 @@
 package military.gunbam.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -19,6 +21,8 @@ import military.gunbam.model.ChattingModel;
 
 public class ChattingViewModel extends ViewModel {
     private DatabaseReference messageRef;
+    private ValueEventListener valueEventListener;
+    private MutableLiveData<ValueEventListener> valueEventListenerLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ChatData>> chatDataListLiveData = new MutableLiveData<>();
     private ChattingModel model = new ChattingModel();
 
@@ -27,13 +31,11 @@ public class ChattingViewModel extends ViewModel {
 
     }
 
-    public void initMessageReference(String roomID) {
-        messageRef = FirebaseDatabase.getInstance("https://militaryapp-800ed-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .getReference("chat")
-                .child(roomID);
-
-        // Add ValueEventListener to messageRef
-        messageRef.addValueEventListener(new ValueEventListener() {
+    public void initMessageReference(String path, String roomID) {
+        if (valueEventListener != null) {
+            messageRef.removeEventListener(valueEventListener);
+        }
+        valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<ChatData> chatDataList = new ArrayList<>();
@@ -43,6 +45,7 @@ public class ChattingViewModel extends ViewModel {
                     long timestamp = snapshot.child("timestamp").getValue(Long.class);
                     String userEmail = snapshot.child("userEmail").getValue(String.class);
                     String userName = snapshot.child("userName").getValue(String.class);
+
                     ChatData chatData = new ChatData(message, senderUid, timestamp, userName, userEmail);
                     chatDataList.add(chatData);
                 }
@@ -53,7 +56,8 @@ public class ChattingViewModel extends ViewModel {
             public void onCancelled(DatabaseError databaseError) {
                 // Handle onCancelled
             }
-        });
+        };
+        model.initMessageReference(path, roomID,valueEventListener);
     }
 
 
@@ -64,5 +68,5 @@ public class ChattingViewModel extends ViewModel {
     public LiveData<List<ChatData>> getChatDataListLiveData() {
         return chatDataListLiveData;
     }
-
+    public LiveData<ValueEventListener> getValueEventListenerLiveData() {return valueEventListenerLiveData; }
 }

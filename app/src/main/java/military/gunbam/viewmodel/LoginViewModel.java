@@ -29,4 +29,5 @@ public class LoginViewModel extends ViewModel {
     public MutableLiveData<LoginResult> getLoginResultLiveData() {
         return loginResultLiveData;
     }
+
 }

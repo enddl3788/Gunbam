@@ -65,7 +65,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<ChattingAdapter.ViewHo
         Log.d("뷰홀더 메시지", chatDataList.get(position).getMessage());
         Log.d("뷰홀더 유저이름", chatDataList.get(position).getUserName());
         Log.d("뷰홀더 보낸사람id", chatDataList.get(position).getSenderUid());
-        Log.d("뷰홀더 보낸시간", chatDataList.get(position).getSending_time());
+        //Log.d("뷰홀더 보낸시간", chatDataList.get(position).getSending_time());
 
 
         // 자신인 경우 - 오른쪽 정렬, 왼쪽이미지, 오른쪽 시간 안보임

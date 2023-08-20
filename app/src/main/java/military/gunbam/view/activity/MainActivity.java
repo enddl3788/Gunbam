@@ -114,6 +114,7 @@ public class MainActivity extends BasicActivity {
                             /*
 
                              */
+                            startActivity(military.gunbam.view.activity.ChattingActivity.class);
                             return true;
                     }
                     return false;

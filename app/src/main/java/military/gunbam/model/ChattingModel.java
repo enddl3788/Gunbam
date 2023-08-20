@@ -1,8 +1,13 @@
 package military.gunbam.model;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChattingModel {
     private DatabaseReference messageRef;
@@ -11,12 +16,14 @@ public class ChattingModel {
     public ChattingModel() {
 
     }
-    public void setInstance(String url, String path, String roodID) {
-        messageRef = FirebaseDatabase.getInstance(url).getReference(path).child(roodID);
+    public void initMessageReference(String path, String roodID, ValueEventListener valueEventListener) {
+        messageRef = FirebaseDatabase.getInstance().getReference(path).child(roodID);
+        messageRef.addValueEventListener(valueEventListener);
     }
-    public void setValue(ChatData chatdata){
-        messageRef.setValue(chatdata);
+    public void setValue(ChatData chatData){
+        messageRef.push().setValue(chatData);
     }
+
     public void onDestroy(){
         messageRef.removeEventListener(valueEventListener);
     }
