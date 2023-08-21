@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import military.gunbam.R;
+import military.gunbam.view.fragment.HomeFragment;
 
 public class MainActivity extends BasicActivity {
 
@@ -26,6 +27,7 @@ public class MainActivity extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        init(); // init() 메서드를 onResume() 내에서 호출
     }
 
     @Override
@@ -37,27 +39,18 @@ public class MainActivity extends BasicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        init();
-
-        findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
-        findViewById(R.id.mainFloatingActionButton).setOnClickListener(onClickListener);
     }
 
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.logoutButton:
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(LoginActivity.class);
-                    break;
-                case R.id.mainFloatingActionButton:
-                    startActivity(military.gunbam.view.activity.WritePostActivity.class);
-                    break;
-            }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                init();
+                break;
         }
-    };
+    }
+
     private void init(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -84,13 +77,21 @@ public class MainActivity extends BasicActivity {
                 }
             });
 
+            HomeFragment homeFragment = new HomeFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, homeFragment)
+                    .commit();
+
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.home:
-                            // 홈버튼 눌렀을때 로직
+                            HomeFragment homeFragment = new HomeFragment();
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.container, homeFragment)
+                                    .commit();
                             return true;
                         case R.id.postList:
                             /* 예시
