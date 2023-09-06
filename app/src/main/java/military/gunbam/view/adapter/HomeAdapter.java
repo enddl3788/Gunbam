@@ -43,6 +43,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MainViewHolder
         }
     }
 
+    public void setPostList(ArrayList<PostInfo> postList) {
+        this.mDataset = postList;
+        notifyDataSetChanged();
+    }
+
     public HomeAdapter(Activity activity, ArrayList<PostInfo> myDataset) {
         this.mDataset = myDataset;
         this.activity = activity;

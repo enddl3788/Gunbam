@@ -1,38 +1,26 @@
 package military.gunbam.view.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
-import java.util.Date;
 
 import military.gunbam.R;
 import military.gunbam.listener.OnPostListener;
 import military.gunbam.model.PostInfo;
 import military.gunbam.view.activity.LoginActivity;
-import military.gunbam.view.activity.SignUpActivity;
-import military.gunbam.view.activity.WritePostActivity;
 import military.gunbam.view.adapter.HomeAdapter;
+import military.gunbam.viewmodel.HomeViewModel;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
@@ -43,6 +31,8 @@ public class HomeFragment extends Fragment {
     private boolean topScrolled;
 
     private Button logoutButton;
+
+    private HomeViewModel homeViewModel;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -59,139 +49,72 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        // postList 초기화
         postList = new ArrayList<>();
-        homeAdapter = new HomeAdapter(getActivity(), postList);
-        homeAdapter.setOnPostListener(onPostListener);
 
+        // ViewModel 초기화
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+        // RecyclerView 및 Adapter 설정
         final RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        view.findViewById(R.id.mainFloatingActionButton).setOnClickListener(onClickListener);
-        view.findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        homeAdapter = new HomeAdapter(getActivity(), new ArrayList<>());
         recyclerView.setAdapter(homeAdapter);
+
+        // ViewModel에서 LiveData를 관찰하여 데이터 업데이트를 처리
+        homeViewModel.getPostListLiveData().observe(getViewLifecycleOwner(), postList -> {
+            // Adapter에 데이터를 설정하여 화면 업데이트
+            homeAdapter.setPostList(postList);
+        });
+
+        // 스크롤 이벤트 및 초기 데이터 로딩 처리
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int firstVisibleItemPosition = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
-
-                if(newState == 1 && firstVisibleItemPosition == 0){
-                    topScrolled = true;
-                }
-                if(newState == 0 && topScrolled){
-                    postsUpdate(true);
-                    topScrolled = false;
-                }
-            }
+            // 스크롤 이벤트 처리 코드...
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                int firstVisibleItemPosition = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
-                int lastVisibleItemPosition = ((LinearLayoutManager)layoutManager).findLastVisibleItemPosition();
-
-                if(totalItemCount - 3 <= lastVisibleItemPosition && !updating){
-                    postsUpdate(false);
-                }
-
-                if(0 < firstVisibleItemPosition){
-                    topScrolled = false;
-                }
+                // 스크롤 이벤트 처리 코드...
             }
         });
 
-        postsUpdate(false);
+        // 초기 데이터 로딩
+        homeViewModel.loadPosts(false);
 
+        // 로그아웃 버튼 클릭 이벤트
+        view.findViewById(R.id.logoutButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeViewModel.logout();
+                myStartActivity(LoginActivity.class);
+            }
+        });
+
+        // 게시물 작성 버튼 클릭 이벤트
+        view.findViewById(R.id.mainFloatingActionButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeViewModel.navigateToWritePost(getActivity());
+            }
+        });
+
+        // 게시물 수정 및 삭제 버튼 클릭 이벤트
+        homeAdapter.setOnPostListener(new OnPostListener() {
+            @Override
+            public void onDelete(PostInfo postInfo) {
+                postList.remove(postInfo);
+                homeAdapter.notifyDataSetChanged();
+                homeViewModel.refreshPosts();
+            }
+
+            @Override
+            public void onModify() {
+            }
+        });
         return view;
     }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
-    }
-
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.logoutButton:
-                    FirebaseAuth.getInstance().signOut();
-                    myStartActivity(LoginActivity.class);
-                    break;
-
-                case R.id.mainFloatingActionButton:
-                    myStartActivity(WritePostActivity.class);
-                    break;
-            }
-        }
-    };
-
-    OnPostListener onPostListener = new OnPostListener() {
-        @Override
-        public void onDelete(PostInfo postInfo) {
-            postList.remove(postInfo);
-            homeAdapter.notifyDataSetChanged();
-
-            Log.e("로그: ","삭제 성공");
-        }
-
-        @Override
-        public void onModify() {
-            Log.e("로그: ","수정 성공");
-        }
-    };
-
-    private void postsUpdate(final boolean clear) {
-        updating = true;
-        Date date = postList.size() == 0 || clear ? new Date() : postList.get(postList.size() - 1).getCreatedAt();
-        CollectionReference collectionReference = firebaseFirestore.collection("posts");
-        collectionReference.orderBy("createdAt", Query.Direction.DESCENDING).whereLessThan("createdAt", date).limit(10).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(clear){
-                                postList.clear();
-                            }
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                postList.add(new PostInfo(
-                                        document.getData().get("title").toString(),
-                                        (ArrayList<String>) document.getData().get("contents"),
-                                        (ArrayList<String>) document.getData().get("formats"),
-                                        document.getData().get("publisher").toString(),
-                                        new Date(document.getDate("createdAt").getTime()),
-                                        Boolean.parseBoolean(document.getData().get("isAnonymous").toString()),
-                                        Integer.parseInt(document.getData().get("recommendationCount").toString()),
-                                        document.getId()));
-                            }
-                            homeAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                        updating = false;
-                    }
-                });
-    }
-
 
     private void myStartActivity(Class c) {
         Intent intent = new Intent(getActivity(), c);

@@ -5,6 +5,7 @@ import static military.gunbam.utils.Util.showToast;
 import static military.gunbam.utils.Util.storageUrlToName;
 
 import android.app.Activity;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
