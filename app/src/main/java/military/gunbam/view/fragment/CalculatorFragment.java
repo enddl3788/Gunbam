@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import military.gunbam.R;
 
-public class calculator_fragment extends Fragment {
+public class CalculatorFragment extends Fragment {
 
     private View view;
 
