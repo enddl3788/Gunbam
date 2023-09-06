@@ -4,12 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -26,13 +32,22 @@ public class HomeViewModel extends ViewModel {
 
     private static final String TAG = "HomeFragment";
 
+    private FirebaseAuth mAuth;
     private FirebaseFirestore firebaseFirestore;
+
     private MutableLiveData<ArrayList<PostInfo>> postListLiveData = new MutableLiveData<>();
     private boolean updating;
     private boolean topScrolled;
     private FirebaseHelper firebaseHelper;
 
+    private MutableLiveData<Boolean> isAdmin = new MutableLiveData<>();
+
+    public LiveData<Boolean> getIsAdmin() {
+        return isAdmin;
+    }
+
     public HomeViewModel() {
+        mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         postListLiveData.setValue(new ArrayList<>());
     }
@@ -79,6 +94,42 @@ public class HomeViewModel extends ViewModel {
         firebaseHelper.storageDelete(postInfo);
     }
 
+    public void checkUserIsAdmin() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference userRef = db.collection("users").document(user.getUid());
+
+            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists()) {
+                            String rank = document.getString("rank");
+                            if ("admin".equals(rank)) {
+                                isAdmin.setValue(true);
+                            } else {
+                                isAdmin.setValue(false);
+                            }
+                        } else {
+                            // 사용자 정보가 없는 경우, isAdmin를 false로 설정
+                            isAdmin.setValue(false);
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                        // 오류 발생 시, isAdmin를 false로 설정
+                        isAdmin.setValue(false);
+                    }
+                }
+            });
+        } else {
+            // 사용자가 로그인하지 않은 경우, isAdmin를 false로 설정
+            isAdmin.setValue(false);
+        }
+    }
+
+
     public void loadPosts(final boolean clear) {
         if (updating) return;
         updating = true;
@@ -89,7 +140,7 @@ public class HomeViewModel extends ViewModel {
         CollectionReference collectionReference = firebaseFirestore.collection("posts");
         collectionReference.orderBy("createdAt", Query.Direction.DESCENDING)
                 .whereLessThan("createdAt", date)
-                .limit(10)
+                //.limit(10)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

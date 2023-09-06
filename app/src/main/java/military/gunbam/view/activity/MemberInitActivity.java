@@ -252,7 +252,7 @@ public class MemberInitActivity extends BasicActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             showToast(MemberInitActivity.this, "회원정보 등록에 성공하였습니다.");
-                            finish();
+                            startActivity(MainActivity.class);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

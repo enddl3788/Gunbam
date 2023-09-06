@@ -39,6 +39,7 @@
         <activity android:name=".view.activity.BasicActivity"/>
         <activity android:name=".view.activity.WritePostActivity"/>
         <activity android:name=".view.activity.PostActivity"/>
+        <activity android:name=".view.activity.AdminActivity"/>
     </application>
 
 </manifest>

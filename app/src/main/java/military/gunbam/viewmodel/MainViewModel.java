@@ -24,6 +24,7 @@ public class MainViewModel extends AndroidViewModel {
     private FirebaseFirestore db;
 
     private MutableLiveData<Boolean> userLoggedIn = new MutableLiveData<>();
+    private MutableLiveData<Boolean> userHasInfo = new MutableLiveData<>();
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -31,6 +32,9 @@ public class MainViewModel extends AndroidViewModel {
         db = FirebaseFirestore.getInstance();
     }
 
+    public LiveData<Boolean> getUserHasInfo() {
+        return userHasInfo;
+    }
     public LiveData<Boolean> getUserLoggedIn() {
         return userLoggedIn;
     }
@@ -39,6 +43,7 @@ public class MainViewModel extends AndroidViewModel {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
             userLoggedIn.setValue(false);
+            userHasInfo.setValue(false);
         } else {
             DocumentReference docRef = db.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -48,8 +53,10 @@ public class MainViewModel extends AndroidViewModel {
                         DocumentSnapshot document = task.getResult();
                         if (document != null && document.exists()) {
                             userLoggedIn.setValue(true);
+                            userHasInfo.setValue(true);
                         } else {
-                            userLoggedIn.setValue(false);
+                            userLoggedIn.setValue(true);
+                            userHasInfo.setValue(false);
                         }
                     } else {
                         Log.d(TAG, "get failed with ", task.getException());

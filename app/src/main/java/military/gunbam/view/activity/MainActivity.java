@@ -2,7 +2,6 @@ package military.gunbam.view.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -28,16 +27,27 @@ public class MainActivity extends BasicActivity {
 
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        // ViewModel에서 사용자 로그인 상태를 관찰합니다.
+        // ViewModel에서 사용자 로그인 상태와 회원 정보 여부를 관찰합니다.
         mainViewModel.getUserLoggedIn().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean userLoggedIn) {
                 if (userLoggedIn) {
-                    // 사용자가 로그인한 경우, 홈 화면으로 이동합니다.
-                    // 초기 화면을 HomeFragment로 설정
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, new HomeFragment())
-                            .commit();
+                    mainViewModel.getUserHasInfo().observe(MainActivity.this, new Observer<Boolean>() {
+                        @Override
+                        public void onChanged(Boolean userHasInfo) {
+                            if (userHasInfo) {
+                                // 사용자가 로그인하고 회원 정보가 있는 경우, 홈 화면으로 이동합니다.
+                                // 초기 화면을 HomeFragment로 설정
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.container, new HomeFragment())
+                                        .commit();
+                            } else {
+                                // 사용자가 로그인하고 회원 정보가 없는 경우, MemberInitActivity로 이동합니다.
+                                startActivity(MemberInitActivity.class);
+                                finish();
+                            }
+                        }
+                    });
                 } else {
                     // 사용자가 로그인하지 않은 경우, LoginActivity로 이동합니다.
                     startActivity(LoginActivity.class);
