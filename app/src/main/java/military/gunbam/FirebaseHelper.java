@@ -17,7 +17,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 import military.gunbam.listener.OnPostListener;
-import military.gunbam.model.PostInfo;
+import military.gunbam.model.Post.PostInfo;
 
 public class FirebaseHelper {
     private Activity activity;

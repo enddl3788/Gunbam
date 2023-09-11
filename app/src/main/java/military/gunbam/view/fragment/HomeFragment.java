@@ -28,9 +28,8 @@ import java.util.Date;
 
 import military.gunbam.R;
 import military.gunbam.listener.OnPostListener;
-import military.gunbam.model.PostInfo;
+import military.gunbam.model.Post.PostInfo;
 import military.gunbam.view.activity.LoginActivity;
-import military.gunbam.view.activity.SignUpActivity;
 import military.gunbam.view.activity.WritePostActivity;
 import military.gunbam.view.adapter.HomeAdapter;
 

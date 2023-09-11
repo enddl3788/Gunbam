@@ -1,4 +1,4 @@
-package military.gunbam.model;
+package military.gunbam.model.Post;
 
 import java.io.Serializable;
 import java.util.ArrayList;

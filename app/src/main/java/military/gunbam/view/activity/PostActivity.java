@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,27 +23,24 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import military.gunbam.R;
-import military.gunbam.listener.OnPostListener;
 import military.gunbam.model.CommentInfo;
-import military.gunbam.model.PostInfo;
-import military.gunbam.FirebaseHelper;
+import military.gunbam.model.Post.PostInfo;
 import military.gunbam.view.ReadContentsView;
 import military.gunbam.view.fragment.CommentListFragment;
+import military.gunbam.viewmodel.PostViewModel;
 
 public class PostActivity extends BasicActivity {
     private PostInfo postInfo;
-    private FirebaseHelper firebaseHelper;
+
     private ReadContentsView readContentsVIew;
     private LinearLayout contentsLayout;
-
-    private FirebaseFirestore firestore;
-
     private EditText commentEditText;
     private ImageButton postCommentButton;
     private CheckBox anonymousCheckBox;
+
+    private PostViewModel postViewModel;
 
     protected void onResume() {
         super.onResume();
@@ -63,14 +60,14 @@ public class PostActivity extends BasicActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        firestore = FirebaseFirestore.getInstance();
+        postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
+
 
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
-        contentsLayout = findViewById(R.id.contentsLayout);
+        //contentsLayout = findViewById(R.id.contentsLayout);
         readContentsVIew = findViewById(R.id.readContentsView);
 
-        firebaseHelper = new FirebaseHelper(this);
-        firebaseHelper.setOnPostListener(onPostListener);
+
 
         findViewById(R.id.viewPostBackButton).setOnClickListener(onClickListener);
         findViewById(R.id.postCommentButton).setOnClickListener(onClickListener);
@@ -103,7 +100,7 @@ public class PostActivity extends BasicActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete:
-                firebaseHelper.storageDelete(postInfo);
+                storageDelete(postInfo);
                 return true;
             case R.id.modify:
                 myStartActivity(WritePostActivity.class, postInfo);
@@ -113,17 +110,6 @@ public class PostActivity extends BasicActivity {
         }
     }
 
-    OnPostListener onPostListener = new OnPostListener() {
-        @Override
-        public void onDelete(PostInfo postInfo) {
-            Log.e("로그 ","삭제 성공");
-        }
-
-        @Override
-        public void onModify() {
-            Log.e("로그 ","수정 성공");
-        }
-    };
 
     private void uiUpdate(){
         readContentsVIew.setPostInfo(postInfo);
@@ -134,6 +120,15 @@ public class PostActivity extends BasicActivity {
         intent.putExtra("postInfo", postInfo);
         startActivityForResult(intent, 0);
     }
+
+    private void storageDelete(PostInfo postInfo){
+        postViewModel.firebaseHelperStorageDelete(postInfo);
+    }
+    private CollectionReference collection(String comment) {
+        return postViewModel.firebaseStoreCollection(comment);
+    }
+
+
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -156,9 +151,8 @@ public class PostActivity extends BasicActivity {
 
                     if (!TextUtils.isEmpty(commentContent)) {
                         CommentInfo newComment = new CommentInfo(postId, commentContent, commentAuthor, isAnonymous, null, commentUploadTime);
-                        // Here, parentCommentId is set to null. You can modify this to add replies.
 
-                        CollectionReference commentsCollection = firestore.collection("comments");
+                        CollectionReference commentsCollection = collection("comments");
                         commentsCollection.add(newComment)
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override

@@ -61,4 +61,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             commentUploadTimeTextView = itemView.findViewById(R.id.commentUploadTimeTextView);
         }
     }
+
+    public void updateData(List<CommentInfo> newCommentList) {
+        commentList.clear();
+        commentList.addAll(newCommentList);
+        notifyDataSetChanged();
+    }
 }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import military.gunbam.R;
-import military.gunbam.model.PostInfo;
+import military.gunbam.model.Post.PostInfo;
 
 public class ReadContentsView extends LinearLayout {
     private Context context;

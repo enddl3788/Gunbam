@@ -1,4 +1,4 @@
-package military.gunbam.model;
+package military.gunbam.model.member;
 
 
 public class MemberInfo {

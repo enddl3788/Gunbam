@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import military.gunbam.R;
-import military.gunbam.model.PostInfo;
+import military.gunbam.model.Post.PostInfo;
 import military.gunbam.view.ContentsItemView;
 
 public class WritePostActivity extends BasicActivity{

@@ -7,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,12 +20,10 @@ import java.util.ArrayList;
 
 import military.gunbam.R;
 import military.gunbam.listener.OnPostListener;
-import military.gunbam.model.PostInfo;
+import military.gunbam.model.Post.PostInfo;
 import military.gunbam.FirebaseHelper;
 import military.gunbam.view.ReadContentsView;
-import military.gunbam.view.activity.PasswordResetActivity;
 import military.gunbam.view.activity.PostActivity;
-import military.gunbam.view.activity.SignUpActivity;
 import military.gunbam.view.activity.WritePostActivity;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MainViewHolder> {
