@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import military.gunbam.R;
-import military.gunbam.model.PostInfo;
 
 public class AdminActivity extends BasicActivity {
 

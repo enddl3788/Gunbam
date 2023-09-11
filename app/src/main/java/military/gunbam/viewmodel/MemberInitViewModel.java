@@ -82,7 +82,6 @@ public class MemberInitViewModel extends ViewModel {
             if (draftPath == null) {
                 MemberInfo memberInfo = new MemberInfo(nickName, name, phoneNumber, birthDate, joinDate, dischargeDate, rank);
                 uploader(memberInfo);
-                if(!isUploaded.getValue()) return;
 
             } else {
                 try {

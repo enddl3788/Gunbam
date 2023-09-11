@@ -11,6 +11,8 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,10 +23,12 @@ import java.util.Date;
 import military.gunbam.R;
 import military.gunbam.listener.OnPostListener;
 import military.gunbam.model.Post.PostInfo;
+import military.gunbam.view.activity.AdminActivity;
 import military.gunbam.view.activity.LoginActivity;
 import military.gunbam.view.activity.SignUpActivity;
 import military.gunbam.view.activity.WritePostActivity;
 import military.gunbam.view.adapter.HomeAdapter;
+import military.gunbam.viewmodel.HomeViewModel;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";

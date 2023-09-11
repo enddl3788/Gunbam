@@ -3,7 +3,9 @@ package military.gunbam.viewmodel;
 import android.app.Activity;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,7 +37,5 @@ public class PostViewModel extends ViewModel {
     public CollectionReference firebaseStoreCollection(String comment) {
         return firestore.collection(comment);
     }
-
-
 
 }

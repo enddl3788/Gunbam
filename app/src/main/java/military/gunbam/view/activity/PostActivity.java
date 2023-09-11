@@ -30,6 +30,7 @@ import military.gunbam.model.Post.PostInfo;
 import military.gunbam.view.ReadContentsView;
 import military.gunbam.view.fragment.CommentListFragment;
 import military.gunbam.viewmodel.PostViewModel;
+import military.gunbam.viewmodel.PostViewModelFactory;
 
 public class PostActivity extends BasicActivity {
     private PostInfo postInfo;
@@ -60,8 +61,7 @@ public class PostActivity extends BasicActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-
+        postViewModel = new ViewModelProvider(this, new PostViewModelFactory(this)).get(PostViewModel.class);
 
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
         //contentsLayout = findViewById(R.id.contentsLayout);

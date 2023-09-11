@@ -25,7 +25,8 @@ import java.util.Date;
 
 import military.gunbam.FirebaseHelper;
 import military.gunbam.listener.OnPostListener;
-import military.gunbam.model.PostInfo;
+
+import military.gunbam.model.Post.PostInfo;
 import military.gunbam.view.activity.WritePostActivity;
 
 public class HomeViewModel extends ViewModel {
