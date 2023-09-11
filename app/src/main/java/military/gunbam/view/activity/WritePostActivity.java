@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -60,6 +61,7 @@ public class WritePostActivity extends BasicActivity{
     private int pathCount, successCount;
     private CheckBox anonymousCheckBox;
     private boolean isAnonymous = false;
+    private ImageButton writePostBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,7 @@ public class WritePostActivity extends BasicActivity{
         titleEditText = findViewById(R.id.titleEditText);
         anonymousCheckBox = findViewById(R.id.writePostAnonymousCheckBox);
 
+        findViewById(R.id.writePostBackButton).setOnClickListener(onClickListener);
         findViewById(R.id.writePostButton).setOnClickListener(onClickListener);
         findViewById(R.id.image).setOnClickListener(onClickListener);
         findViewById(R.id.imageModify).setOnClickListener(onClickListener);
@@ -150,6 +153,9 @@ public class WritePostActivity extends BasicActivity{
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
+                case R.id.writePostBackButton:
+                    onBackPressed();
+                    break;
                 case R.id.writePostButton:
                     storageUpload();
                     break;
