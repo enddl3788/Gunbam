@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 import military.gunbam.FirebaseHelper;
 import military.gunbam.listener.OnPostListener;
@@ -17,6 +21,7 @@ import military.gunbam.model.Post.PostInfo;
 public class PostViewModel extends ViewModel {
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private FirebaseHelper firebaseHelper;
+    private MutableLiveData<ArrayList<PostInfo>> postListLiveData = new MutableLiveData<>();
     public PostViewModel(Activity activity){
         firebaseHelper = new FirebaseHelper(activity);
         firebaseHelper.setOnPostListener(new OnPostListener() {
@@ -37,5 +42,7 @@ public class PostViewModel extends ViewModel {
     public CollectionReference firebaseStoreCollection(String comment) {
         return firestore.collection(comment);
     }
-
+    public LiveData<ArrayList<PostInfo>> getPostListLiveData() {
+        return postListLiveData;
+    }
 }

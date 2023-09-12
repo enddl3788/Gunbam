@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,9 +25,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.ArrayList;
+
 import military.gunbam.R;
 import military.gunbam.model.CommentInfo;
 import military.gunbam.model.Post.PostInfo;
+import military.gunbam.model.login.LoginResult;
 import military.gunbam.view.ReadContentsView;
 import military.gunbam.view.fragment.CommentListFragment;
 import military.gunbam.viewmodel.PostViewModel;
@@ -42,7 +46,7 @@ public class PostActivity extends BasicActivity {
     private CheckBox anonymousCheckBox;
 
     private PostViewModel postViewModel;
-
+    private ArrayList<PostInfo> postList;
     protected void onResume() {
         super.onResume();
 
@@ -66,8 +70,16 @@ public class PostActivity extends BasicActivity {
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
         //contentsLayout = findViewById(R.id.contentsLayout);
         readContentsVIew = findViewById(R.id.readContentsView);
-
-
+        /*
+        postViewModel.getPostListLiveData().observe(this, new Observer<PostInfo>() {
+            // Adapter에 데이터를 설정하여 화면 업데이트
+            //homeAdapter.setPostList(postList);
+            @Override
+            public void onChanged(PostInfo postInfo) {
+                postList.add(postInfo);
+            }
+        });
+        */
 
         findViewById(R.id.viewPostBackButton).setOnClickListener(onClickListener);
         findViewById(R.id.postCommentButton).setOnClickListener(onClickListener);
