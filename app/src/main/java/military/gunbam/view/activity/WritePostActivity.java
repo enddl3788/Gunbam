@@ -5,6 +5,7 @@ import static military.gunbam.utils.Util.INTENT_MEDIA;
 import static military.gunbam.utils.Util.INTENT_PATH;
 import static military.gunbam.utils.Util.isImageFile;
 import static military.gunbam.utils.Util.isStorageUrl;
+import static military.gunbam.utils.Util.showToast;
 import static military.gunbam.utils.Util.storageUrlToName;
 
 import android.app.Activity;
@@ -21,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,8 +47,12 @@ import java.util.Date;
 import military.gunbam.R;
 import military.gunbam.model.PostInfo;
 import military.gunbam.view.ContentsItemView;
+import military.gunbam.viewmodel.WritePostViewModel;
 
-public class WritePostActivity extends BasicActivity{
+public class WritePostActivity extends AppCompatActivity {
+
+    private WritePostViewModel writePostViewModel;
+
     private static final String TAG = "WritePostActivity";
     private FirebaseUser user;
     private StorageReference storageRef;
@@ -68,6 +75,57 @@ public class WritePostActivity extends BasicActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
 
+        parent = findViewById(R.id.contentsLayout);
+        buttonsBackgroundLayout = findViewById(R.id.buttonsBackgroundLayout);
+        loaderLayout = findViewById(R.id.loaderLyaout);
+        contentsEditText = findViewById(R.id.contentsEditText);
+        titleEditText = findViewById(R.id.titleEditText);
+        anonymousCheckBox = findViewById(R.id.writePostAnonymousCheckBox);
+
+        findViewById(R.id.writePostBackButton).setOnClickListener(onClickListener);
+        findViewById(R.id.writePostButton).setOnClickListener(onClickListener);
+        findViewById(R.id.image).setOnClickListener(onClickListener);
+        findViewById(R.id.imageModify).setOnClickListener(onClickListener);
+        findViewById(R.id.delete).setOnClickListener(onClickListener);
+
+        writePostViewModel = new ViewModelProvider(this).get(WritePostViewModel.class);
+
+        // UI 요소와 ViewModel 데이터를 바인딩
+        titleEditText = findViewById(R.id.titleEditText);
+        contentsEditText = findViewById(R.id.contentsEditText);
+        anonymousCheckBox = findViewById(R.id.writePostAnonymousCheckBox);
+
+        // ViewModel의 데이터를 UI에 연결
+        writePostViewModel.getTitleLiveData().observe(this, title -> {
+            titleEditText.setText(title);
+        });
+
+        writePostViewModel.getContentsLiveData().observe(this, contents -> {
+            contentsEditText.setText(contents);
+        });
+
+        writePostViewModel.getAnonymousLiveData().observe(this, isAnonymous -> {
+            anonymousCheckBox.setChecked(isAnonymous);
+        });
+
+        anonymousCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isAnonymous = isChecked;
+            writePostViewModel.setAnonymous(isAnonymous); // ViewModel에 변경된 데이터 업데이트
+        });
+
+        // 기존 코드 중 필요한 부분만 남기고 나머지는 삭제
+        // ...
+
+        // 편집 모드인 경우 데이터 로드 및 초기화
+        PostInfo postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
+        if (postInfo != null) {
+            writePostViewModel.setTitle(postInfo.getTitle()); // ViewModel에 데이터 설정
+            writePostViewModel.setContents(postInfo.getContents()); // ViewModel에 데이터 설정
+        }
+    }
+
+    // ... 나머지 코드 ...
+    /*
         parent = findViewById(R.id.contentsLayout);
         buttonsBackgroundLayout = findViewById(R.id.buttonsBackgroundLayout);
         loaderLayout = findViewById(R.id.loaderLyaout);
@@ -104,6 +162,7 @@ public class WritePostActivity extends BasicActivity{
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
         postInit();
     }
+*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -276,6 +335,11 @@ public class WritePostActivity extends BasicActivity{
                     }
                 }
             }
+            // ViewModel에 데이터 업데이트
+            writePostViewModel.setTitle(title);
+            writePostViewModel.setContents(contentsList);
+            writePostViewModel.setAnonymous(isAnonymous);
+
             if (successCount == 0) {
                 storeUpload(documentReference, new PostInfo(title, contentsList, formatList, user.getUid(), date, isAnonymous, recommendationCount));
             }
@@ -306,6 +370,7 @@ public class WritePostActivity extends BasicActivity{
                 });
     }
 
+    /*
     private void postInit() {
         if (postInfo != null) {
             titleEditText.setText(postInfo.getTitle());
@@ -340,6 +405,7 @@ public class WritePostActivity extends BasicActivity{
         }
     }
 
+     */
     private void myStartActivity(Class c, int media, int requestCode) {
         Intent intent = new Intent(this, c);
         intent.putExtra(INTENT_MEDIA, media);
