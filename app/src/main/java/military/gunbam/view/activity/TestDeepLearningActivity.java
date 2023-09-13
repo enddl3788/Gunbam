@@ -1,7 +1,6 @@
 package military.gunbam.view.activity;
 
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -32,7 +31,7 @@ public class TestDeepLearningActivity extends BasicActivity {
                         .build();
         objectDetector = ObjectDetector.createFromOptions(getApplicationContext(), options);
 
-        Bitmap bitmap;
+        Bitmap bitmap = null;
         MPImage mpImage = new BitmapImageBuilder(bitmap).build();
 
         Button button = findViewById(R.id.deep_button);
