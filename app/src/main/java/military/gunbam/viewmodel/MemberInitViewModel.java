@@ -1,6 +1,7 @@
 package military.gunbam.viewmodel;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -82,10 +83,12 @@ public class MemberInitViewModel extends ViewModel {
             if (draftPath == null) {
                 MemberInfo memberInfo = new MemberInfo(nickName, name, phoneNumber, birthDate, joinDate, dischargeDate, rank);
                 uploader(memberInfo);
+                //Log.d("테스트","테스트 : null");
 
             } else {
                 try {
                     InputStream stream = new FileInputStream(new File(draftPath));
+                    //Log.d("테스트", "테스트 : " + draftPath);
                     UploadTask uploadTask = mountainImagesRef.putStream(stream);
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override

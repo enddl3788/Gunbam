@@ -1,15 +1,19 @@
 package military.gunbam.view.activity;
 
+import static military.gunbam.utils.Util.INTENT_PATH;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -17,6 +21,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import military.gunbam.R;
 import military.gunbam.viewmodel.MemberInitViewModel;
@@ -53,9 +61,6 @@ public class MemberInitActivity extends BasicActivity {
             }
         });
 
-
-
-
         draftImageView = findViewById(R.id.draftImageView);
         draftImageView.setOnClickListener(onClickListener);
 
@@ -81,11 +86,28 @@ public class MemberInitActivity extends BasicActivity {
         switch (requestCode) {
             case 0: {
                 if (resultCode == Activity.RESULT_OK) {
-                    draftPath = data.getStringExtra("draftPath");
+                    draftPath = data.getStringExtra(INTENT_PATH);
+                    Log.d("테스트", "테스트 : " +draftPath);
                     Glide.with(this)
                             .load(draftPath)
+                            .error(R.drawable.draft_notice_image) // 이미지 로딩 중 오류가 발생했을 때 표시할 이미지 설정
                             .centerCrop()
                             .override(500)
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    // Glide 로딩 실패 시 처리할 내용을 여기에 추가
+                                    showToast(MemberInitActivity.this, "이미지를 불러오지 못했습니다.");
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    // Glide 로딩 성공 시 처리할 내용을 여기에 추가
+                                    showToast(MemberInitActivity.this, "이미지를 불러왔습니다.");
+                                    return false;
+                                }
+                            })
                             .into(draftImageView);
                 }
             }
@@ -120,7 +142,7 @@ public class MemberInitActivity extends BasicActivity {
                                 2); // 다른 권한 요청과 겹치지 않도록 새로운 requestCode인 2로 변경합니다.
                     } else {
                         cardView.setVisibility(View.GONE);
-                        startActivity(CameraActivity.class);
+                        myStartActivity(CameraActivity.class);
                     }
                     break;
                 case R.id.galleryButton:
@@ -137,7 +159,7 @@ public class MemberInitActivity extends BasicActivity {
                                 1);
                     } else {
                         cardView.setVisibility(View.GONE);
-                        startActivity(GalleryActivity.class);
+                        myStartActivity(GalleryActivity.class);
                     }
                     break;
             }
@@ -180,4 +202,8 @@ public class MemberInitActivity extends BasicActivity {
 
     }
 
+    private void myStartActivity(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivityForResult(intent, 0);
+    }
 }
