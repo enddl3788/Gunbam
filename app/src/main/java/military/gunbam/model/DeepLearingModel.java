@@ -8,12 +8,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.icu.util.Output;
 import android.media.Image;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.mediapipe.framework.image.BitmapImageBuilder;
 import com.google.mediapipe.tasks.core.BaseOptions;
+import com.google.mediapipe.tasks.core.OutputHandler;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
 import com.google.mediapipe.tasks.vision.objectdetector.ObjectDetector;
 import com.google.mediapipe.tasks.vision.objectdetector.ObjectDetectorResult;
@@ -86,6 +88,19 @@ public class DeepLearingModel {
 
         MPImage mpImage = new BitmapImageBuilder(bitmap).build();
         ObjectDetectorResult detectionResult = objectDetector.detect(mpImage);
+        OutputHandler handler = new OutputHandler();
+
+
+        OutputHandler.PureResultListener<ObjectDetectorResult> listener = new OutputHandler.PureResultListener<ObjectDetectorResult>() {
+            @Override
+            public void run(ObjectDetectorResult result) {
+                // 이곳에 원하는 동작을 구현합니다.
+                System.out.println("결과값: " + result);
+            }
+        };
+        listener.run(detectionResult);
+
+
 
         //detectionResult = ?????????????????? 출력해야함.
             // 사진이 색칠됨.

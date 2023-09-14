@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
@@ -12,9 +14,12 @@ import military.gunbam.model.DeepLearingModel;
 
 public class DeepLearningViewModel extends ViewModel {
     private DeepLearingModel deepLearingModel;
-
+    private MutableLiveData<Bitmap> resultBitmap = new MutableLiveData<>();
     public DeepLearningViewModel(Context context, String modelPath) {
         deepLearingModel = new DeepLearingModel(context, modelPath);
+    }
+    public LiveData<Bitmap> getResultBitmap() {
+        return resultBitmap;
     }
     public void run(Bitmap bitmap){
         Bitmap originalBitmap = bitmap;
@@ -37,7 +42,8 @@ public class DeepLearningViewModel extends ViewModel {
                 Bitmap rightDown = deepLearingModel.deepLearing(bottomRight);
 
                 Bitmap mergeBitmap = deepLearingModel.mergeBitmapImage(leftUp, rightUp, leftDown, rightDown);
-                //imgViewResult.setImageBitmap(mergeBitmap);
+
+                resultBitmap.postValue(mergeBitmap);
             }
         }, 1); // 0.001초후
     }
