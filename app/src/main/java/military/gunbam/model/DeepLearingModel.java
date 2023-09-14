@@ -8,12 +8,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.icu.util.Output;
 import android.media.Image;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.mediapipe.framework.image.BitmapImageBuilder;
+import com.google.mediapipe.tasks.components.containers.Category;
+import com.google.mediapipe.tasks.components.containers.Detection;
 import com.google.mediapipe.tasks.core.BaseOptions;
 import com.google.mediapipe.tasks.core.OutputHandler;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
@@ -28,6 +31,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DeepLearingModel {
@@ -90,25 +94,50 @@ public class DeepLearingModel {
         ObjectDetectorResult detectionResult = objectDetector.detect(mpImage);
 
 
+
         OutputHandler.PureResultListener<ObjectDetectorResult> listener = new OutputHandler.PureResultListener<ObjectDetectorResult>() {
             @Override
             public void run(ObjectDetectorResult result) {
                 // 이곳에 원하는 동작을 구현합니다.
-                System.out.println("결과값: " + result);
+                // result.detections()
+                // result.timestampMs()
+                // result.boundingBox()
+                // result.categories()
+                long timestampMs = result.timestampMs();
+                System.out.println("결과값 출력");
+                System.out.println("timestampMs: " + Long.toString(result.timestampMs()));
+                List<Detection> detections = result.detections();
+                for(Detection detection : detections){
+                    RectF bbox = detection.boundingBox();
+
+                    System.out.println("bbox.bottom: " +bbox.bottom);
+                    System.out.println("bbox.left: " +bbox.left);
+                    System.out.println("bbox.right: " +bbox.right);
+                    System.out.println("bbox.top: " +bbox.top);
+
+                    List<Category> category = detection.categories();
+
+                    for(Category cat : detection.categories() ){
+                        String catName = cat.categoryName();
+                        String displayName = cat.displayName();
+                        float catScore = cat.score();
+                        int index = cat.index();
+                        System.out.println("catName: " + catName);
+                        System.out.println("displayName: " + displayName);
+                        System.out.println("catScore: " + Float.toString(catScore));
+                        System.out.println("index: " + Integer.toString(index));
+
+                    }
+
+                }
+
+
+
             }
         };
+
         listener.run(detectionResult);
 
-
-
-        //detectionResult = ?????????????????? 출력해야함.
-            // 사진이 색칠됨.
-            // 사진 DB에 넣든지 저장
-
-        Log.d("Output Scores", Arrays.deepToString(outputScores));
-        Log.d("Output Locations", Arrays.deepToString(outputLocations));
-        Log.d("Output Detections", Arrays.toString(outputDetections));
-        Log.d("Output Categories", Arrays.deepToString(outputCategories));
 
 
         Bitmap processedBitmap  = bitmap;//BitmapFactory.decodeResource(getResources(), R.drawable.test_596);
