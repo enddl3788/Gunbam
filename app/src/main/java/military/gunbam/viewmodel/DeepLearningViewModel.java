@@ -47,5 +47,4 @@ public class DeepLearningViewModel extends ViewModel {
             }
         }, 1); // 0.001초후
     }
-
 }

@@ -1,7 +1,6 @@
 package military.gunbam.viewmodel;
 
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -25,10 +24,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import military.gunbam.model.login.LoginResult;
 import military.gunbam.model.member.MemberInfo;
 import military.gunbam.model.member.MemberModel;
-import military.gunbam.model.member.MemberUploadResult;
 
 public class MemberInitViewModel extends ViewModel {
     private FirebaseUser user;
@@ -83,12 +80,10 @@ public class MemberInitViewModel extends ViewModel {
             if (draftPath == null) {
                 MemberInfo memberInfo = new MemberInfo(nickName, name, phoneNumber, birthDate, joinDate, dischargeDate, rank);
                 uploader(memberInfo);
-                //Log.d("테스트","테스트 : null");
 
             } else {
                 try {
                     InputStream stream = new FileInputStream(new File(draftPath));
-                    //Log.d("테스트", "테스트 : " + draftPath);
                     UploadTask uploadTask = mountainImagesRef.putStream(stream);
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override

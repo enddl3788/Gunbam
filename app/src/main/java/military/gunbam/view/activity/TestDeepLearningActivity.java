@@ -1,11 +1,13 @@
 package military.gunbam.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,23 +31,29 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import military.gunbam.R;
+import military.gunbam.model.DeepLearingModel;
 import military.gunbam.viewmodel.DeepLearningViewModel;
+import military.gunbam.viewmodel.DeepLearningViewModelFactory;
 
 public class TestDeepLearningActivity extends BasicActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 2;
     private File file;
     private String fileName = null;
-    private ImageView imgViewResult = findViewById(R.id.img_view_result);
+    private ImageView imgViewResult;
     private ObjectDetector objectDetector;
     private ObjectDetector.ObjectDetectorOptions options;
     private ObjectDetectorResult detectionResult;
     private DeepLearningViewModel deepLearningViewModel;
+    private Button selectImageButton;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testdeeplearning);
 
-        deepLearningViewModel = new ViewModelProvider(this).get(DeepLearningViewModel.class);
+        Context context = getApplication();
+        String modelPath = "model.tflite";
+        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(context, modelPath)).get(DeepLearningViewModel.class);
 
         options = ObjectDetector.ObjectDetectorOptions.builder()
                         .setBaseOptions(BaseOptions.builder().setModelAssetPath("model.tflite").build())
@@ -54,93 +62,50 @@ public class TestDeepLearningActivity extends BasicActivity {
                         .build();
         objectDetector = ObjectDetector.createFromOptions(getApplicationContext(), options);
 
-        Bitmap bitmap = null;
-        MPImage mpImage = new BitmapImageBuilder(bitmap).build();
+        imgViewResult = findViewById(R.id.img_view_result);
+
         deepLearningViewModel.getResultBitmap().observe(this, new Observer<Bitmap>() {
             @Override
-            public void onChanged(Bitmap bitmap) {
-                imgViewResult.setImageBitmap(bitmap);
+            public void onChanged(@Nullable Bitmap resultBitmap) {
+                if (resultBitmap != null) {
+                    imgViewResult.setImageBitmap(resultBitmap);
+                }
             }
         });
 
+        //Bitmap bitmap = null;
+        //MPImage mpImage = new BitmapImageBuilder(bitmap).build();
+        deepLearningViewModel.getResultBitmap().observe(this, new Observer<Bitmap>() {
+            @Override
+            public void onChanged(@Nullable Bitmap resultBitmap) {
+                if (resultBitmap != null) {
+                    imgViewResult.setImageBitmap(resultBitmap);
+                }
+            }
+        });
 
-
-
-
-
-
-
-
-
-        Button button = findViewById(R.id.deep_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        selectImageButton = findViewById(R.id.deep_button);
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                detectionResult = objectDetector.detect(mpImage);
-
+                // 갤러리에서 이미지 선택
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
             }
         });
-
-
-
-
-
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri photoUri = data.getData();
+            Uri selectedImageUri = data.getData();
             try {
-                InputStream inputStream = getContentResolver().openInputStream(photoUri);
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                deepLearningViewModel.run(selectedImage);
 
-                long now = System.currentTimeMillis();
-                Date date = new Date(now);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                String getTime = sdf.format(date);
-
-                fileName = getNickname + " posted:" + getTime + ".jpg";
-                file = new File(getCacheDir(), fileName);
-                FileOutputStream outputStream = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                outputStream.flush();
-                outputStream.close();
-
-                Uri uri = Uri.fromFile(file);
-                imgViewResult.setVisibility(View.VISIBLE);
-                imgViewResult.setImageURI(uri);
-
-                Bitmap originalBitmap = bitmap; // Your original bitmap
-
-
-                int width = bitmap.getWidth();
-                int height = bitmap.getHeight();
-                int newWidth = width / 2;
-                int newHeight = height / 2;
-
-                Bitmap topLeft = Bitmap.createBitmap(originalBitmap, 0, 0, newWidth, newHeight);
-                Bitmap topRight = Bitmap.createBitmap(originalBitmap, newWidth, 0, newWidth, newHeight);
-                Bitmap bottomLeft = Bitmap.createBitmap(originalBitmap, 0, newHeight, newWidth, newHeight);
-                Bitmap bottomRight = Bitmap.createBitmap(originalBitmap, newWidth, newHeight, newWidth, newHeight);
-
-
-
-                Handler mHandler = new Handler();
-                mHandler.postDelayed(new Runnable()  {
-                    public void run() {
-                        deepLearningViewModel.run(bitmap);
-                        Bitmap leftUp = DeepLearning(topLeft);
-                        Bitmap rightUp = DeepLearning(topRight);
-                        Bitmap leftDown = DeepLearning(bottomLeft);
-                        Bitmap rightDown = DeepLearning(bottomRight);
-
-                        Bitmap mergeBitmap = mergeBitmapImage(leftUp, rightUp, leftDown, rightDown);
-                        imgViewResult.setImageBitmap(mergeBitmap);
-                    }
-                }, 1); // 0.001초후
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
