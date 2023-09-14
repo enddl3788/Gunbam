@@ -88,7 +88,6 @@ public class DeepLearingModel {
 
         MPImage mpImage = new BitmapImageBuilder(bitmap).build();
         ObjectDetectorResult detectionResult = objectDetector.detect(mpImage);
-        OutputHandler handler = new OutputHandler();
 
 
         OutputHandler.PureResultListener<ObjectDetectorResult> listener = new OutputHandler.PureResultListener<ObjectDetectorResult>() {
@@ -113,7 +112,7 @@ public class DeepLearingModel {
 
 
         Bitmap processedBitmap  = bitmap;//BitmapFactory.decodeResource(getResources(), R.drawable.test_596);
-        deepLearningImageView.setImageBitmap(bitmap);
+        //deepLearningImageView.setImageBitmap(bitmap);
 
         /*
         * ObjectDetectorResult:
@@ -131,7 +130,7 @@ public class DeepLearingModel {
                     class name  : dog
         *
         * */
-        processedBitmap  = Bitmap.createScaledBitmap(processedBitmap, deepLearningImageView.getWidth(), deepLearningImageView.getHeight(), true);
+        processedBitmap  = Bitmap.createScaledBitmap(processedBitmap, bitmap.getWidth(), bitmap.getHeight(), true);
 
         Canvas canvas = new Canvas(processedBitmap );
         int numDetections = (int) outputDetections[0];
@@ -141,10 +140,10 @@ public class DeepLearingModel {
                 if(outputScores[0][i] >= 0.3) {
                     Log.d("확률", outputScores[0][i] + "통과");
                     float[] location = outputLocations[0][i];
-                    int x1 = (int) (location[1] * deepLearningImageView.getWidth() );
-                    int y1 = (int) (location[0] * deepLearningImageView.getHeight() );
-                    int x2 = (int) (location[3] * deepLearningImageView.getWidth() );
-                    int y2 = (int) (location[2] * deepLearningImageView.getHeight() );
+                    int x1 = (int) (location[1] * bitmap.getWidth() );
+                    int y1 = (int) (location[0] * bitmap.getHeight() );
+                    int x2 = (int) (location[3] * bitmap.getWidth() );
+                    int y2 = (int) (location[2] * bitmap.getHeight() );
 
                     if (x1 < 0) {
                         x1 = 0;
@@ -158,17 +157,17 @@ public class DeepLearingModel {
                     String category = labels[categoryIndex]; // 레이블 목록에서 해당 인덱스에 해당하는 카테고리 추출
 
                     Paint paint = new Paint();
-                    /*
+
                     // 바운딩 박스 출력
                     paint.setColor(Color.RED);
                     paint.setStyle(Paint.Style.STROKE);
                     paint.setStrokeWidth(10.0f);
                     canvas.drawRect(x1, y1, x2, y2, paint);
-                    */
+
                     paint.setStyle(Paint.Style.FILL);
                     paint.setTextSize(30);
                     paint.setColor(Color.BLACK);
-                    //canvas.drawText(category, x1 + 10, y1, paint); // 카테고리 출력
+                    canvas.drawText(category, x1 + 10, y1, paint); // 카테고리 출력
 
                     // 해당 영역 캡처 및 모자이크 처리
                     int width = x2 - x1;

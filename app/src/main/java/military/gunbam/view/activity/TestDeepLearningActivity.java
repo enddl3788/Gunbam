@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.mediapipe.framework.image.BitmapImageBuilder;
 import com.google.mediapipe.framework.image.MPImage;
 import com.google.mediapipe.tasks.core.BaseOptions;
+import com.google.mediapipe.tasks.core.OutputHandler;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
 import com.google.mediapipe.tasks.vision.objectdetector.ObjectDetector;
 import com.google.mediapipe.tasks.vision.objectdetector.ObjectDetectorResult;
@@ -30,13 +31,14 @@ import java.util.Date;
 
 import military.gunbam.R;
 import military.gunbam.viewmodel.DeepLearningViewModel;
+import military.gunbam.viewmodel.DeepLearningViewModelFactory;
 
 public class TestDeepLearningActivity extends BasicActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 2;
     private File file;
     private String fileName = null;
-    private ImageView imgViewResult = findViewById(R.id.img_view_result);
+    private ImageView imgViewResult;
     private ObjectDetector objectDetector;
     private ObjectDetector.ObjectDetectorOptions options;
     private ObjectDetectorResult detectionResult;
@@ -45,27 +47,17 @@ public class TestDeepLearningActivity extends BasicActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testdeeplearning);
 
-        deepLearningViewModel = new ViewModelProvider(this).get(DeepLearningViewModel.class);
-
-        options = ObjectDetector.ObjectDetectorOptions.builder()
-                        .setBaseOptions(BaseOptions.builder().setModelAssetPath("model.tflite").build())
-                        .setRunningMode(RunningMode.IMAGE)
-                        .setMaxResults(5)
-                        .build();
-        objectDetector = ObjectDetector.createFromOptions(getApplicationContext(), options);
-
-        Bitmap bitmap = null;
-        MPImage mpImage = new BitmapImageBuilder(bitmap).build();
+        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(this, "model.tflite")).get(DeepLearningViewModel.class);
+        deepLearningViewModel = new DeepLearningViewModel(this, "model.tflite");
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
+        imgViewResult = findViewById(R.id.img_view_result);
         deepLearningViewModel.getResultBitmap().observe(this, new Observer<Bitmap>() {
             @Override
             public void onChanged(Bitmap bitmap) {
                 imgViewResult.setImageBitmap(bitmap);
+
             }
         });
-
-
-
-
 
 
 
@@ -76,8 +68,8 @@ public class TestDeepLearningActivity extends BasicActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                detectionResult = objectDetector.detect(mpImage);
-
+                // 출력 결과 확인
+                deepLearningViewModel.run(bitmap);
             }
         });
 
@@ -86,6 +78,7 @@ public class TestDeepLearningActivity extends BasicActivity {
 
 
     }
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -130,11 +123,11 @@ public class TestDeepLearningActivity extends BasicActivity {
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {
                     public void run() {
-                        deepLearningViewModel.run(bitmap);
-                        Bitmap leftUp = DeepLearning(topLeft);
-                        Bitmap rightUp = DeepLearning(topRight);
-                        Bitmap leftDown = DeepLearning(bottomLeft);
-                        Bitmap rightDown = DeepLearning(bottomRight);
+                        //deepLearningViewModel.run(bitmap);
+                        //Bitmap leftUp = deepLearningViewModel.run(topLeft);
+                        //Bitmap rightUp = deepLearningViewModel.run(topRight);
+                        //Bitmap leftDown = deepLearningViewModel.run(bottomLeft);
+                        //Bitmap rightDown = deepLearningViewModel.run(bottomRight);
 
                         Bitmap mergeBitmap = mergeBitmapImage(leftUp, rightUp, leftDown, rightDown);
                         imgViewResult.setImageBitmap(mergeBitmap);
@@ -144,5 +137,6 @@ public class TestDeepLearningActivity extends BasicActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
+
 }
