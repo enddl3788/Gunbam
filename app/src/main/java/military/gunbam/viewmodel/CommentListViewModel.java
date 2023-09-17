@@ -49,7 +49,6 @@ public class CommentListViewModel extends ViewModel {
                             commentList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String commentId = document.getId();
-                                Log.d("test", postId + " / " + commentId);
                                 String commentContent = document.getString("commentContent");
                                 String commentAuthor = document.getString("commentAuthor");
                                 boolean commentIsAnonymous = document.getBoolean("commentIsAnonymous"); // 익명 여부 가져오기

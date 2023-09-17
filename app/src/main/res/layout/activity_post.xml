@@ -25,18 +25,24 @@
             android:orientation="vertical"
             android:padding="10dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="제목"
+                android:id="@+id/titleTextView"
+                android:textSize="20dp"
+                android:layout_marginBottom="10dp"/>
+
             <military.gunbam.view.ReadContentsView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/readContentsView">
-
-            </military.gunbam.view.ReadContentsView>
+                android:id="@+id/readContentsView"
+                android:layout_marginBottom="10dp"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="15dp"
-                android:layout_margin="5dp">
+                app:cardCornerRadius="15dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

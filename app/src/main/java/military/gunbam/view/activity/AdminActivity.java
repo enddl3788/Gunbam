@@ -60,7 +60,7 @@ public class AdminActivity extends BasicActivity {
 
                             if (i % 5 == 0) {
                                 // 이미지 추가
-                                String imageUrl = "https://www.gstatic.com/mobilesdk/160503_mobilesdk/logo/2x/firebase_28dp.png"; // 이미지 URL 예시
+                                String imageUrl = "http://luxblock.co.kr/file_data/luxblook/2020/08/17/4b0708ca352f2f903ed0ef0162bac4f2.png"; // 이미지 URL 예시
                                 contentsList.add(imageUrl);
                                 formatList.add("image");
                             }
