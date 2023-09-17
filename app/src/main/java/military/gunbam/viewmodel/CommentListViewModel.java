@@ -1,5 +1,6 @@
 package military.gunbam.viewmodel;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -25,10 +26,8 @@ import military.gunbam.view.adapter.CommentAdapter;
 
 public class CommentListViewModel extends ViewModel {
     private MutableLiveData<List<CommentInfo>> commentListLiveData = new MutableLiveData<>();
-    private static FirebaseFirestore firestore;
-    private static List<CommentInfo> commentList;
-
-
+    private FirebaseFirestore firestore;
+    private List<CommentInfo> commentList;
 
     public LiveData<List<CommentInfo>> getCommentListLiveData() {
         return commentListLiveData;
@@ -38,8 +37,7 @@ public class CommentListViewModel extends ViewModel {
         firestore = FirebaseFirestore.getInstance();
         commentList = new ArrayList<>();
     }
-    public static void loadComments(String postId) {
-
+    public void loadComments(String postId) {
         firestore.collection("comments")
                 .whereEqualTo("commentId", postId)
                 .orderBy("commentUploadTime", Query.Direction.DESCENDING) // 색인 사용
@@ -51,6 +49,7 @@ public class CommentListViewModel extends ViewModel {
                             commentList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String commentId = document.getId();
+                                Log.d("test", postId + " / " + commentId);
                                 String commentContent = document.getString("commentContent");
                                 String commentAuthor = document.getString("commentAuthor");
                                 boolean commentIsAnonymous = document.getBoolean("commentIsAnonymous"); // 익명 여부 가져오기
@@ -75,17 +74,16 @@ public class CommentListViewModel extends ViewModel {
                                                         commentInfo = new CommentInfo(commentId, commentContent, nickName, commentIsAnonymous, parentCommentId, commentUploadTime);
                                                     }
                                                     commentList.add(commentInfo);
+                                                    // 댓글 목록이 업데이트되었음을 LiveData에 알립니다.
+                                                    commentListLiveData.setValue(commentList);
                                                 }
                                             }
                                         });
-
                             }
                         } else {
                             // Handle error
                         }
-
                     }
                 });
     }
-
 }

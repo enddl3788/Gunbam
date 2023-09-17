@@ -100,11 +100,6 @@ public class DeepLearingModel {
                 // 감지된 객체의 목록을 얻습니다.
                 List<Detection> detections = result.detections();
 
-                // 각 객체의 확률을 출력합니다.
-                for (Detection detection : detections) {
-                    List<Category> categories = detection.categories();
-                    System.out.println("결과값: " + categories);
-                }
             }
         };
         listener.run(detectionResult);
