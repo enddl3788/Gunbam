@@ -52,11 +52,11 @@ public class TestDeepLearningActivity extends BasicActivity {
         setContentView(R.layout.activity_testdeeplearning);
 
         Context context = getApplication();
-        String modelPath = "model.tflite";
+        String modelPath = "model2.tflite";
         deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(context, modelPath)).get(DeepLearningViewModel.class);
 
         options = ObjectDetector.ObjectDetectorOptions.builder()
-                        .setBaseOptions(BaseOptions.builder().setModelAssetPath("model.tflite").build())
+                        .setBaseOptions(BaseOptions.builder().setModelAssetPath("model2.tflite").build())
                         .setRunningMode(RunningMode.IMAGE)
                         .setMaxResults(5)
                         .build();
