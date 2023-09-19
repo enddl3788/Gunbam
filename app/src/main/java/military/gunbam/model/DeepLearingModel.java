@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.icu.util.Output;
+import android.media.Image;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -20,6 +22,7 @@ import com.google.mediapipe.tasks.core.OutputHandler;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
 import com.google.mediapipe.tasks.vision.objectdetector.ObjectDetector;
 import com.google.mediapipe.tasks.vision.objectdetector.ObjectDetectorResult;
+import com.google.mediapipe.framework.image.BitmapImageBuilder;
 import com.google.mediapipe.framework.image.MPImage;
 
 import java.io.FileInputStream;
@@ -41,7 +44,6 @@ public class DeepLearingModel {
     private ObjectDetector.ObjectDetectorOptions options;
     private ObjectDetectorResult detectionResult;
     private ImageView deepLearningImageView;
-
     public DeepLearingModel(Context context, String modelPath) {
         options = ObjectDetector.ObjectDetectorOptions.builder()
                 .setBaseOptions(BaseOptions.builder().setModelAssetPath(modelPath).build())
@@ -54,7 +56,7 @@ public class DeepLearingModel {
 
     public Bitmap deepLearing(Bitmap bitmap) {
         //Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test_596);
-        Log.d("DeepLearingModel", "넓이 : " + bitmap.getWidth() + "\n높이 : " + bitmap.getHeight());
+        Log.d("이미지뷰",bitmap.getWidth() + " " + bitmap.getHeight());
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, WIDTH, HEIGHT, true);
         int[] intValues = new int[WIDTH * HEIGHT];
@@ -63,8 +65,8 @@ public class DeepLearingModel {
         float[] floatValues = new float[WIDTH * HEIGHT * CHANNELS];
         for (int i = 0; i < intValues.length; ++i) {
             final int val = intValues[i];
-            floatValues[i * 3] = ((val >> 16) & 0xFF);
-            floatValues[i * 3 + 1] = ((val >> 8) & 0xFF);
+            floatValues[i * 3] = ((val >> 16) & 0xFF) ;
+            floatValues[i * 3 + 1] = ((val >> 8) & 0xFF) ;
             floatValues[i * 3 + 2] = (val & 0xFF);
         }
 
@@ -72,13 +74,10 @@ public class DeepLearingModel {
         for (int i = 0; i < HEIGHT; ++i) {
             for (int j = 0; j < WIDTH; ++j) {
                 for (int c = 0; c < CHANNELS; ++c) {
-                    inputArray[0][i][j][c] = (byte) floatValues[(i * WIDTH + j) * CHANNELS + c];
+                    inputArray[0][i][j][c] = (byte)floatValues[(i * WIDTH + j) * CHANNELS + c];
                 }
             }
         }
-
-        MPImage mpImage = new BitmapImageBuilder(bitmap).build();
-        ObjectDetectorResult detectionResult = objectDetector.detect(mpImage);
 
         float[][] outputScores = new float[1][25];
         float[][][] outputLocations = new float[1][25][4];
@@ -91,7 +90,10 @@ public class DeepLearingModel {
         outputMap.put(2, outputDetections);
         outputMap.put(3, outputCategories);
 
-        OutputHandler handler = new OutputHandler();
+        MPImage mpImage = new BitmapImageBuilder(bitmap).build();
+        ObjectDetectorResult detectionResult = objectDetector.detect(mpImage);
+
+
 
         OutputHandler.PureResultListener<ObjectDetectorResult> listener = new OutputHandler.PureResultListener<ObjectDetectorResult>() {
             @Override
@@ -105,17 +107,17 @@ public class DeepLearingModel {
                 System.out.println("결과값 출력");
                 System.out.println("timestampMs: " + Long.toString(result.timestampMs()));
                 List<Detection> detections = result.detections();
-                for (Detection detection : detections) {
+                for(Detection detection : detections){
                     RectF bbox = detection.boundingBox();
 
-                    System.out.println("bbox.bottom: " + bbox.bottom);
-                    System.out.println("bbox.left: " + bbox.left);
-                    System.out.println("bbox.right: " + bbox.right);
-                    System.out.println("bbox.top: " + bbox.top);
+                    System.out.println("bbox.bottom: " +bbox.bottom);
+                    System.out.println("bbox.left: " +bbox.left);
+                    System.out.println("bbox.right: " +bbox.right);
+                    System.out.println("bbox.top: " +bbox.top);
 
                     List<Category> category = detection.categories();
 
-                    for (Category cat : detection.categories()) {
+                    for(Category cat : detection.categories() ){
                         String catName = cat.categoryName();
                         String displayName = cat.displayName();
                         float catScore = cat.score();
@@ -124,31 +126,53 @@ public class DeepLearingModel {
                         System.out.println("displayName: " + displayName);
                         System.out.println("catScore: " + Float.toString(catScore));
                         System.out.println("index: " + Integer.toString(index));
+
                     }
+
                 }
+
+
+
             }
         };
 
-        Bitmap processedBitmap = bitmap;
+        listener.run(detectionResult);
+
+
+
+        Bitmap processedBitmap  = bitmap;//BitmapFactory.decodeResource(getResources(), R.drawable.test_596);
         //deepLearningImageView.setImageBitmap(bitmap);
 
-        processedBitmap = Bitmap.createScaledBitmap(processedBitmap, bitmap.getWidth(), bitmap.getHeight(), true);
+        /*
+        * ObjectDetectorResult:
+            Detection #0:
+                Box: (x: 355, y: 133, w: 190, h: 206)
+                Categories:
+                    index       : 17
+                    score       : 0.73828
+                    class name  : dog
+            Detection #1:
+                Box: (x: 103, y: 15, w: 138, h: 369)
+                Categories:
+                    index       : 17
+                    score       : 0.73047
+                    class name  : dog
+        *
+        * */
+        processedBitmap  = Bitmap.createScaledBitmap(processedBitmap, bitmap.getWidth(), bitmap.getHeight(), true);
 
-        Bitmap mutableBitmap = processedBitmap.copy(processedBitmap.getConfig(), true);
-        Canvas canvas = new Canvas(mutableBitmap);
-
-        //Canvas canvas2 = new Canvas(processedBitmap);
+        Canvas canvas = new Canvas(processedBitmap );
         int numDetections = (int) outputDetections[0];
         for (int i = 0; i < numDetections; i++) {
-            Log.d("DeepLearingModel", outputScores[0][i] + "확률");
+            Log.d("확률", outputScores[0][i] + "확률");
             try {
-                if (outputScores[0][i] >= 0.3) {
-                    Log.d("DeepLearingModel", outputScores[0][i] + "통과");
+                if(outputScores[0][i] >= 0.3) {
+                    Log.d("확률", outputScores[0][i] + "통과");
                     float[] location = outputLocations[0][i];
-                    int x1 = (int) (location[1] * bitmap.getWidth());
-                    int y1 = (int) (location[0] * bitmap.getHeight());
-                    int x2 = (int) (location[3] * bitmap.getWidth());
-                    int y2 = (int) (location[2] * bitmap.getHeight());
+                    int x1 = (int) (location[1] * bitmap.getWidth() );
+                    int y1 = (int) (location[0] * bitmap.getHeight() );
+                    int x2 = (int) (location[3] * bitmap.getWidth() );
+                    int y2 = (int) (location[2] * bitmap.getHeight() );
 
                     if (x1 < 0) {
                         x1 = 0;
@@ -156,7 +180,7 @@ public class DeepLearingModel {
                     if (x2 < 0) {
                         x2 = 0;
                     }
-                    Log.d("DeepLearingModel", x1 + " " + y1 + " " + x2 + " " + y2);
+                    Log.d("영역_3", x1 + " " + y1 + " " + x2 + " " + y2);
 
                     int categoryIndex = (int) outputCategories[0][i]; // 객체의 카테고리 인덱스 추출
                     String category = labels[categoryIndex]; // 레이블 목록에서 해당 인덱스에 해당하는 카테고리 추출
@@ -172,29 +196,41 @@ public class DeepLearingModel {
                     paint.setStyle(Paint.Style.FILL);
                     paint.setTextSize(30);
                     paint.setColor(Color.BLACK);
-                    //canvas.drawText(category, x1 + 10, y1, paint); // 카테고리 출력
+                    canvas.drawText(category, x1 + 10, y1, paint); // 카테고리 출력
 
                     // 해당 영역 캡처 및 모자이크 처리
                     int width = x2 - x1;
                     int height = y2 - y1;
-                    Log.d("DeepLearingModel", width + " " + height);
-                    Bitmap capture = Bitmap.createBitmap(processedBitmap, x1, y1, width, height);
-                    Bitmap scaledCapture = Bitmap.createScaledBitmap(capture, width / 30, height / 30, false);  // 모자이크 강도 조절 부분
+                    Log.d("영역_1", width + " " + height);
+                    Bitmap capture = Bitmap.createBitmap(processedBitmap , x1, y1, width, height);
+                    Bitmap scaledCapture = Bitmap.createScaledBitmap(capture, width/30, height/30, false);  // 모자이크 강도 조절 부분
                     Bitmap finalCapture = Bitmap.createScaledBitmap(scaledCapture, width, height, false);
 
                     // 모자이크 처리된 영역 덮어씌우기
                     Rect rect = new Rect(x1, y1, x2, y2);
-                    Log.d("DeepLearingModel", rect + " ");
+                    Log.d("영역_2", rect + " ");
                     canvas.drawBitmap(finalCapture, null, rect, null);
 
                 }
             } catch (Exception e) {
-                Log.d("DeepLearingModel", String.valueOf(e));
+                Log.d("error", String.valueOf(e));
             }
         }
-        return processedBitmap;
-    }
+        return processedBitmap ;
+        /*
+        imgViewResult.setImageBitmap(bitmap2);
+        Log.d("이미지뷰W",Integer.toString(imgViewResult.getWidth()));
+        Log.d("이미지뷰H",Integer.toString(imgViewResult.getHeight()));
 
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            bitmap2.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.getFD().sync(); // flush file descriptor
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+         */
+    }
     public MappedByteBuffer loadModelFile(Activity activity, String modelPath) throws IOException {
         AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(modelPath);
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
@@ -203,7 +239,6 @@ public class DeepLearingModel {
         long declaredLength = fileDescriptor.getDeclaredLength();
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
-
     public Bitmap mergeBitmapImage(Bitmap leftUp, Bitmap rightUp, Bitmap leftDown, Bitmap rightDown) {
         // 가로로 합쳐진 이미지의 폭과 높이 계산
         int resultWidth = leftUp.getWidth() + rightUp.getWidth();
@@ -218,7 +253,8 @@ public class DeepLearingModel {
         canvas.drawBitmap(rightUp, leftUp.getWidth(), 0, null);
         canvas.drawBitmap(leftDown, 0, leftUp.getHeight(), null);
         canvas.drawBitmap(rightDown, leftUp.getWidth(), leftUp.getHeight(), null);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(mergeResult, WIDTH * 4, HEIGHT * 4, true);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(mergeResult, WIDTH*4, HEIGHT*4, true);
         return resizedBitmap;
     }
+
 }

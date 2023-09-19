@@ -23,4 +23,5 @@ public class DeepLearningViewModelFactory implements ViewModelProvider.Factory {
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
+
 }
