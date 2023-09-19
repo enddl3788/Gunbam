@@ -47,8 +47,8 @@ public class TestDeepLearningActivity extends BasicActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testdeeplearning);
 
-        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(this, "model.tflite")).get(DeepLearningViewModel.class);
-        deepLearningViewModel = new DeepLearningViewModel(this, "model.tflite");
+        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(this, "model2.tflite")).get(DeepLearningViewModel.class);
+        deepLearningViewModel = new DeepLearningViewModel(this, "model2.tflite");
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
         imgViewResult = findViewById(R.id.img_view_result);
         deepLearningViewModel.getResultBitmap().observe(this, new Observer<Bitmap>() {
