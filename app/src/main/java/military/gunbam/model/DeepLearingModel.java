@@ -8,15 +8,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.icu.util.Output;
 import android.media.Image;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.mediapipe.framework.image.BitmapImageBuilder;
-import com.google.mediapipe.tasks.components.containers.Category;
-import com.google.mediapipe.tasks.components.containers.Detection;
 import com.google.mediapipe.tasks.core.BaseOptions;
 import com.google.mediapipe.tasks.core.OutputHandler;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
@@ -31,7 +28,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DeepLearingModel {
@@ -135,7 +131,6 @@ public class DeepLearingModel {
 
             }
         };
-
         listener.run(detectionResult);
 
 
@@ -159,7 +154,7 @@ public class DeepLearingModel {
                     class name  : dog
         *
         * */
-        processedBitmap  = Bitmap.createScaledBitmap(processedBitmap, bitmap.getWidth(), bitmap.getHeight(), true);
+        processedBitmap  = Bitmap.createScaledBitmap(processedBitmap, deepLearningImageView.getWidth(), deepLearningImageView.getHeight(), true);
 
         Canvas canvas = new Canvas(processedBitmap );
         int numDetections = (int) outputDetections[0];
@@ -169,10 +164,10 @@ public class DeepLearingModel {
                 if(outputScores[0][i] >= 0.3) {
                     Log.d("확률", outputScores[0][i] + "통과");
                     float[] location = outputLocations[0][i];
-                    int x1 = (int) (location[1] * bitmap.getWidth() );
-                    int y1 = (int) (location[0] * bitmap.getHeight() );
-                    int x2 = (int) (location[3] * bitmap.getWidth() );
-                    int y2 = (int) (location[2] * bitmap.getHeight() );
+                    int x1 = (int) (location[1] * deepLearningImageView.getWidth() );
+                    int y1 = (int) (location[0] * deepLearningImageView.getHeight() );
+                    int x2 = (int) (location[3] * deepLearningImageView.getWidth() );
+                    int y2 = (int) (location[2] * deepLearningImageView.getHeight() );
 
                     if (x1 < 0) {
                         x1 = 0;

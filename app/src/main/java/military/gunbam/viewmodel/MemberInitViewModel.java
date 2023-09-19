@@ -24,10 +24,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import military.gunbam.model.login.LoginResult;
 import military.gunbam.model.member.MemberInfo;
 import military.gunbam.model.member.MemberModel;
-import military.gunbam.model.member.MemberUploadResult;
 
 public class MemberInitViewModel extends ViewModel {
     private FirebaseUser user;
@@ -68,10 +66,12 @@ public class MemberInitViewModel extends ViewModel {
             errorMessage = "유효하지 않은 전화번호입니다.\n'-' 없이 숫자만 입력해주세요.";
         } else if (birthDate.length() != 6) {
             errorMessage = "생년월일은 6자리로 입력해주세요.";
-        } else if (nickName.length() > 0 && isNicknameValid(nickName)) {
+        } else if (isNicknameValid(nickName)) {
             errorMessage = "불건전한 닉네임입니다.\n다른 닉네임을 입력해주세요.";
-        } else if (!(isStringValid(nickName) && isStringValid(name))) {
+        } else if (!isStringValid(name)) {
             errorMessage = "닉네임과 이름에는 특수문자를 포함하지 않아야 합니다.";
+        } else if (nickName.length() >= 10 ||  name.length() >= 10) {
+            errorMessage = "닉네임 또는 이름은 최대 10자까지 가능합니다.";
         } else {
             // 회원정보가 유효한 경우 처리
             FirebaseStorage storage = FirebaseStorage.getInstance();

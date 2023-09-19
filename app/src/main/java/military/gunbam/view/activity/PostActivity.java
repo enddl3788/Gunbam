@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
@@ -44,21 +45,10 @@ public class PostActivity extends BasicActivity {
     private EditText commentEditText;
     private ImageButton postCommentButton;
     private CheckBox anonymousCheckBox;
+    private TextView titleTextView;
 
     private PostViewModel postViewModel;
     private ArrayList<PostInfo> postList;
-    protected void onResume() {
-        super.onResume();
-
-        String postId = postInfo.getId();
-
-        uiUpdate();
-
-        CommentListFragment fragment = CommentListFragment.newInstance(postId);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.commentListFragment, fragment)
-                .commit();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +76,14 @@ public class PostActivity extends BasicActivity {
 
         commentEditText = findViewById(R.id.commentEditText);
         anonymousCheckBox = findViewById(R.id.commentAnonymousCheckBox);
+        titleTextView = findViewById(R.id.titleTextView);
+
+        uiUpdate();
+
+        CommentListFragment fragment = CommentListFragment.newInstance(postInfo.getId());
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.commentListFragment, fragment)
+                .commit();
     }
 
     @Override
@@ -124,7 +122,13 @@ public class PostActivity extends BasicActivity {
 
 
     private void uiUpdate(){
-        readContentsVIew.setPostInfo(postInfo);
+        if (postInfo != null && !TextUtils.isEmpty(postInfo.getTitle())) {
+            titleTextView.setText(postInfo.getTitle());
+            readContentsVIew.setPostInfo(postInfo);
+        } else {
+            showToast(PostActivity.this, "게시물을 불러오지 못하였습니다.");
+            finish();
+        }
     }
 
     private void myStartActivity(Class c, PostInfo postInfo) {
