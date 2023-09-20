@@ -116,7 +116,7 @@ public class DeepLearingModel {
                         //System.out.println("catScore: " + catScore);
                         //System.out.println("index: " + Integer.toString(index));
 
-                        if (catScore >= 0.3) {
+                        if (catScore >= 0.4) {
                             // 이미지에 바운딩 박스 및 정보를 그리고 수정된 비트맵을 얻습니다.
                             processedBitmap = mosaicBoundingBoxOnBitmap(originalBitmap, bbox, catName, catScore);
                             System.out.println("catName: " + catName);

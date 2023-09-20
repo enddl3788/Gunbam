@@ -54,7 +54,6 @@ public class TestDeepLearningActivity extends BasicActivity {
         String modelPath = "model2.tflite";
         deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(context, modelPath)).get(DeepLearningViewModel.class);
         deepLearningViewModel = new DeepLearningViewModel(this, modelPath);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
         imgViewResult = findViewById(R.id.img_view_result);
 
         options = ObjectDetector.ObjectDetectorOptions.builder()

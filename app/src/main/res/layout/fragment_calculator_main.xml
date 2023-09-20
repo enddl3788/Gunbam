@@ -51,22 +51,23 @@
             android:layout_height="wrap_content">
 
             <ProgressBar
+                android:id="@+id/account_progressbar"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:max="100"
                 android:padding="5dp"
-                android:progress="10"
                 android:progressDrawable="@drawable/custom_progressbar"/>
 
             <TextView
+                android:id="@+id/account_tv_progressbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text="10.0000000000000000%" />
+                android:text="0.00000000000000%" />
         </RelativeLayout>
 
         <LinearLayout
@@ -99,9 +100,11 @@
                     android:autoSizeTextType="uniform"
                     android:inputType="number"
                     android:text="D-DAY"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_gravity="center"/>
 
                 <ImageView
+                    android:id="@+id/account_discharge_img"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginStart="20dp"
@@ -109,7 +112,7 @@
                     android:src="@drawable/black" />
 
                 <TextView
-                    android:id="@+id/count_btn"
+                    android:id="@+id/account_discharge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
