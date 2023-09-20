@@ -115,26 +115,38 @@ public class CalculatorFragment extends Fragment {
             long dischargeDateMillis = dischargeDate.getTime();
             long currentMillis = System.currentTimeMillis();
 
-            // D-DAY를 텍스트 뷰에 표시
-            ddayText = "D-" + ((dischargeDateMillis - currentMillis) / (1000 * 60 * 60 * 24));
-            account_count.setText(ddayText);
+            long daysRemaining = (dischargeDateMillis - currentMillis) / (1000 * 60 * 60 * 24);
+            if (daysRemaining < 0) {
+                // 전역일이 이미 지났으면 "전역 완료" 표시
+                account_count.setText("전역 완료");
+                account_tv_progressbar.setText("100.00000000000000%");
 
-            // 전체 초 단위 값 계산
-            long totalSeconds = (dischargeDateMillis - joinDateMillis) / 1000;
+                // ProgressBar의 최대 값을 전체 초 단위 값으로 설정
+                account_progressbar.setMax(1);
+                // ProgressBar를 현재까지의 초로 설정
+                account_progressbar.setProgress(1);
+            } else {
+                // D-DAY를 텍스트 뷰에 표시
+                ddayText = "D-" + daysRemaining;
+                account_count.setText(ddayText);
 
-            // 현재까지의 초 단위 값 계산
-            long passedSeconds = (currentMillis - joinDateMillis) / 1000;
+                // 전체 초 단위 값 계산
+                long totalSeconds = (dischargeDateMillis - joinDateMillis) / 1000;
 
-            // ProgressBar의 최대 값을 전체 초 단위 값으로 설정
-            account_progressbar.setMax((int) totalSeconds);
+                // 현재까지의 초 단위 값 계산
+                long passedSeconds = (currentMillis - joinDateMillis) / 1000;
 
-            // ProgressBar를 현재까지의 초로 설정
-            account_progressbar.setProgress((int) passedSeconds);
+                // ProgressBar의 최대 값을 전체 초 단위 값으로 설정
+                account_progressbar.setMax((int) totalSeconds);
 
-            // 퍼센트 계산 및 TextView에 표시
-            double percent = (passedSeconds / (double) totalSeconds) * 100;
-            String percentStr = String.format("%.14f%%", percent);
-            account_tv_progressbar.setText(percentStr);
+                // ProgressBar를 현재까지의 초로 설정
+                account_progressbar.setProgress((int) passedSeconds);
+
+                // 퍼센트 계산 및 TextView에 표시
+                double percent = (passedSeconds / (double) totalSeconds) * 100;
+                String percentStr = String.format("%.14f%%", percent);
+                account_tv_progressbar.setText(percentStr);
+            }
 
         } catch (ParseException e) {
             e.printStackTrace();
