@@ -124,46 +124,6 @@ public class WritePostActivity extends AppCompatActivity {
         }
     }
 
-    // ... 나머지 코드 ...
-    /*
-        parent = findViewById(R.id.contentsLayout);
-        buttonsBackgroundLayout = findViewById(R.id.buttonsBackgroundLayout);
-        loaderLayout = findViewById(R.id.loaderLyaout);
-        contentsEditText = findViewById(R.id.contentsEditText);
-        titleEditText = findViewById(R.id.titleEditText);
-        anonymousCheckBox = findViewById(R.id.writePostAnonymousCheckBox);
-
-        findViewById(R.id.writePostBackButton).setOnClickListener(onClickListener);
-        findViewById(R.id.writePostButton).setOnClickListener(onClickListener);
-        findViewById(R.id.image).setOnClickListener(onClickListener);
-        findViewById(R.id.imageModify).setOnClickListener(onClickListener);
-        findViewById(R.id.delete).setOnClickListener(onClickListener);
-
-        anonymousCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    // 체크박스가 체크되었을 때 isAnonymous 값을 true로 설정
-                    // 체크가 해제되었을 때 isAnonymous 값을 false로 설정
-                    isAnonymous = isChecked;
-                });
-
-        buttonsBackgroundLayout.setOnClickListener(onClickListener);
-        contentsEditText.setOnFocusChangeListener(onFocusChangeListener);
-        titleEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    selectedEditText = null;
-                }
-            }
-        });
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
-
-        postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
-        postInit();
-    }
-*/
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -273,6 +233,8 @@ public class WritePostActivity extends AppCompatActivity {
         if (title.length() > 0) {
             int recommendationCount = 0;
 
+            String boardName = getIntent().getStringExtra("boardName");
+
             loaderLayout.setVisibility(View.VISIBLE);
             final ArrayList<String> contentsList = new ArrayList<>();
             final ArrayList<String> formatList = new ArrayList<>();
@@ -282,6 +244,7 @@ public class WritePostActivity extends AppCompatActivity {
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
             final DocumentReference documentReference = postInfo == null ? firebaseFirestore.collection("posts").document() : firebaseFirestore.collection("posts").document(postInfo.getId());
             final Date date = postInfo == null ? new Date() : postInfo.getCreatedAt();
+
             for (int i = 0; i < parent.getChildCount(); i++) {
                 LinearLayout linearLayout = (LinearLayout) parent.getChildAt(i);
                 for (int ii = 0; ii < linearLayout.getChildCount(); ii++) {
@@ -321,7 +284,7 @@ public class WritePostActivity extends AppCompatActivity {
                                             successCount--;
                                             contentsList.set(index, uri.toString());
                                             if (successCount == 0) {
-                                                PostInfo postInfo = new PostInfo(title, contentsList, formatList, user.getUid(), date, isAnonymous, recommendationCount);
+                                                PostInfo postInfo = new PostInfo(title, contentsList, formatList, user.getUid(), date, isAnonymous, recommendationCount, boardName);
                                                 storeUpload(documentReference, postInfo);
                                             }
                                         }
@@ -341,7 +304,7 @@ public class WritePostActivity extends AppCompatActivity {
             writePostViewModel.setAnonymous(isAnonymous);
 
             if (successCount == 0) {
-                storeUpload(documentReference, new PostInfo(title, contentsList, formatList, user.getUid(), date, isAnonymous, recommendationCount));
+                storeUpload(documentReference, new PostInfo(title, contentsList, formatList, user.getUid(), date, isAnonymous, recommendationCount, boardName));
             }
         } else {
             showToast(WritePostActivity.this, "제목을 입력해주세요.");
@@ -370,42 +333,6 @@ public class WritePostActivity extends AppCompatActivity {
                 });
     }
 
-    /*
-    private void postInit() {
-        if (postInfo != null) {
-            titleEditText.setText(postInfo.getTitle());
-            ArrayList<String> contentsList = postInfo.getContents();
-            for (int i = 0; i < contentsList.size(); i++) {
-                String contents = contentsList.get(i);
-                if (isStorageUrl(contents)) {
-                    pathList.add(contents);
-                    ContentsItemView contentsItemView = new ContentsItemView(this);
-                    parent.addView(contentsItemView);
-
-                    contentsItemView.setImage(contents);
-                    contentsItemView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            buttonsBackgroundLayout.setVisibility(View.VISIBLE);
-                            selectedImageVIew = (ImageView) v;
-                        }
-                    });
-
-                    contentsItemView.setOnFocusChangeListener(onFocusChangeListener);
-                    if (i < contentsList.size() - 1) {
-                        String nextContents = contentsList.get(i + 1);
-                        if (!isStorageUrl(nextContents)) {
-                            contentsItemView.setText(nextContents);
-                        }
-                    }
-                } else if (i == 0) {
-                    contentsEditText.setText(contents);
-                }
-            }
-        }
-    }
-
-     */
     private void myStartActivity(Class c, int media, int requestCode) {
         Intent intent = new Intent(this, c);
         intent.putExtra(INTENT_MEDIA, media);

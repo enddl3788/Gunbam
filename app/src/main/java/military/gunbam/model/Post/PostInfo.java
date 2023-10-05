@@ -15,8 +15,9 @@ public class PostInfo implements Serializable {
     private String id;
     private boolean isAnonymous;
     private int recommendationCount;
+    private String boardName;
 
-    public PostInfo(String title, ArrayList<String> contents, ArrayList<String> formats, String publisher, Date createdAt, boolean isAnonymous, int recommendationCount, String id){
+    public PostInfo(String title, ArrayList<String> contents, ArrayList<String> formats, String publisher, Date createdAt, boolean isAnonymous, int recommendationCount,String boardName, String id){
         this.title = title;
         this.contents = contents;
         this.formats = formats;
@@ -24,10 +25,12 @@ public class PostInfo implements Serializable {
         this.createdAt = createdAt;
         this.isAnonymous = isAnonymous;
         this.recommendationCount = recommendationCount;
+        this.boardName = boardName;
         this.id = id;
     }
 
-    public PostInfo(String title, ArrayList<String> contents, ArrayList<String> formats, String publisher, Date createdAt, boolean isAnonymous, int recommendationCount){
+
+    public PostInfo(String title, ArrayList<String> contents, ArrayList<String> formats, String publisher, Date createdAt, boolean isAnonymous, int recommendationCount, String boardName){
         this.title = title;
         this.contents = contents;
         this.formats = formats;
@@ -35,6 +38,7 @@ public class PostInfo implements Serializable {
         this.createdAt = createdAt;;
         this.isAnonymous = isAnonymous;
         this.recommendationCount = recommendationCount;
+        this.boardName = boardName;
     }
 
     public Map<String, Object> getPostInfo(){
@@ -46,7 +50,8 @@ public class PostInfo implements Serializable {
         docData.put("createdAt",createdAt);
         docData.put("isAnonymous",isAnonymous);
         docData.put("recommendationCount",recommendationCount);
-        return  docData;
+        docData.put("boardName", boardName);
+        return docData;
     }
 
     public String getTitle(){
@@ -87,16 +92,19 @@ public class PostInfo implements Serializable {
     }
 
     public boolean getIsAnonymous() {
-        return isAnonymous;
+        return this.isAnonymous;
     }
     public void setIsAnonymous(boolean isAnonymous) {
         this.isAnonymous = isAnonymous;
     }
 
     public int getRecommendationCount() {
-        return recommendationCount;
+        return this.recommendationCount;
     }
     public void setRecommendationCount(int recommendationCount) {
         this.recommendationCount = recommendationCount;
     }
+
+    public String getBoardName(){ return this.boardName = boardName; }
+    public void setBoardName(String boardName){ this.boardName = boardName; }
 }
