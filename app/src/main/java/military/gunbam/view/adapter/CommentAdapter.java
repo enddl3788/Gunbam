@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,6 +46,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String formattedUploadTime = sdf.format(comment.getCommentUploadTime().toDate());
         holder.commentUploadTimeTextView.setText(formattedUploadTime);
+
+        // Check if parent comment id is not null, then show reply view
+        if (comment.getParentCommentId() != null) {
+            holder.reply_img.setVisibility(View.VISIBLE);
+            holder.replyButton.setVisibility(View.GONE);
+        } else {
+            holder.reply_img.setVisibility(View.GONE);
+            holder.replyButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -53,12 +64,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {
         TextView commentContentTextView, commentAuthorTextView, commentUploadTimeTextView;
-
+        ImageView reply_img;
+        ImageButton replyButton;
         public CommentViewHolder(View itemView) {
             super(itemView);
             commentContentTextView = itemView.findViewById(R.id.commentContentTextView);
             commentAuthorTextView = itemView.findViewById(R.id.commentAuthorTextView);
             commentUploadTimeTextView = itemView.findViewById(R.id.commentUploadTimeTextView);
+            reply_img = itemView.findViewById(R.id.reply_img);
+            replyButton = itemView.findViewById(R.id.replyButton);
         }
     }
 

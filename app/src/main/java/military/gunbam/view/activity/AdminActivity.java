@@ -148,6 +148,7 @@ public class AdminActivity extends BasicActivity {
                             }
                         }
                     });
+                    finish();
                     break;
             }
         }
