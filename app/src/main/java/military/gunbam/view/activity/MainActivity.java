@@ -1,9 +1,14 @@
 package military.gunbam.view.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import military.gunbam.R;
 import military.gunbam.utils.Util;
 import military.gunbam.view.fragment.HomeFragment;
+import military.gunbam.view.fragment.KakaoMapFragment;
 import military.gunbam.viewmodel.MainViewModel;
 
 public class MainActivity extends BasicActivity {
@@ -20,6 +26,10 @@ public class MainActivity extends BasicActivity {
     private long backKeyPressedTime = 0;
 
     private MainViewModel mainViewModel;
+
+    private static final int PERMISSION_REQUEST_CODE = 1000;
+
+    private KakaoMapFragment kakaoMapFragment;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +46,7 @@ public class MainActivity extends BasicActivity {
                         @Override
                         public void onChanged(Boolean userHasInfo) {
                             if (userHasInfo) {
+
                                 // 사용자가 로그인하고 회원 정보가 있는 경우, 홈 화면으로 이동합니다.
                                 // 초기 화면을 HomeFragment로 설정
                                 getSupportFragmentManager().beginTransaction()
@@ -74,8 +85,18 @@ public class MainActivity extends BasicActivity {
                         //selectedFragment = new MyPageFragment();
                         break;
                     case R.id.tmoSearch:
-                        // 예시: 다른 섹션으로 이동하는 Fragment를 설정합니다.
-                         break;
+                        // 권한 체크
+                        if (!checkPermissions()) {
+                            // 권한이 없는 경우 권한 요청
+                            requestPermissions();
+                        } else {
+                            // 권한이 있는 경우 해당 권한이 필요한 작업 수행
+                            if (kakaoMapFragment == null) {
+                                kakaoMapFragment = new KakaoMapFragment();
+                            }
+                            selectedFragment = kakaoMapFragment;
+                        }
+                        break;
                     case R.id.report:
                         // 예시: 다른 섹션으로 이동하는 Fragment를 설정합니다.
                         break;
@@ -88,6 +109,45 @@ public class MainActivity extends BasicActivity {
                 return true;
             }
         });
+    }
+    private boolean checkPermissions() {
+        // 필요한 권한들을 체크하고 모든 권한이 부여되었는지 확인
+        int internetPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
+        int fineLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int coarseLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        return internetPermission == PackageManager.PERMISSION_GRANTED &&
+                fineLocationPermission == PackageManager.PERMISSION_GRANTED &&
+                coarseLocationPermission == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        // 권한 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.INTERNET, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSION_REQUEST_CODE
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            // 권한에 대한 응답 처리
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 부여된 경우
+                // 이곳에서 권한이 부여된 경우에 대한 작업을 수행합니다.
+                Util.replaceFragment(getSupportFragmentManager(), R.id.container, new KakaoMapFragment());
+            } else {
+                // 권한이 거부된 경우
+                // 이곳에서 권한이 거부된 경우에 대한 처리를 수행합니다.
+                showToast(MainActivity.this, "권한을 허용해주세요.");
+            }
+        }
     }
 
     @Override

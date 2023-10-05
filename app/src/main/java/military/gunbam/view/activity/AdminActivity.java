@@ -1,12 +1,19 @@
 package military.gunbam.view.activity;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +34,7 @@ public class AdminActivity extends BasicActivity {
         findViewById(R.id.admin_menu_1_button).setOnClickListener(onClickListener);
         findViewById(R.id.admin_menu_2_button).setOnClickListener(onClickListener);
         findViewById(R.id.admin_menu_3_button).setOnClickListener(onClickListener);
+        findViewById(R.id.admin_menu_4_button).setOnClickListener(onClickListener);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -102,7 +110,34 @@ public class AdminActivity extends BasicActivity {
                 case R.id.admin_menu_3_button:
                     startActivity(TestDeepLearningActivity.class);
                     break;
+
+                case R.id.admin_menu_4_button:
+                    Log.e("getKeyHash", ""+ getKeyHash(AdminActivity.this));
+                    showToast(AdminActivity.this,"getKeyHash" + getKeyHash(AdminActivity.this));
+                    break;
             }
         }
     };
+
+    public static String getKeyHash(final Context context) {
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
+            if (packageInfo == null)
+                return null;
+
+            for (Signature signature : packageInfo.signatures) {
+                try {
+                    MessageDigest md = MessageDigest.getInstance("SHA");
+                    md.update(signature.toByteArray());
+                    return android.util.Base64.encodeToString(md.digest(), android.util.Base64.NO_WRAP);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -69,4 +69,8 @@ dependencies {
     // Skip this if you don't want to use integration libraries or configure Glide.
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
     implementation 'com.google.mediapipe:tasks-vision:latest.release'
+
+    implementation 'com.kakao.maps.open:android:2.6.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/libDaumMapAndroid.jar')
 }
