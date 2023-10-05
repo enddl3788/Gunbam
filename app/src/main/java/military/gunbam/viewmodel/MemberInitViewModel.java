@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import military.gunbam.model.member.MemberInfo;
 import military.gunbam.model.member.MemberModel;
@@ -87,6 +89,7 @@ public class MemberInitViewModel extends ViewModel {
                 try {
                     InputStream stream = new FileInputStream(new File(draftPath));
                     UploadTask uploadTask = mountainImagesRef.putStream(stream);
+
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -140,7 +143,6 @@ public class MemberInitViewModel extends ViewModel {
             isUploaded.setValue(false);
         }
     }
-
     public boolean isNicknameValid(String nickname) {
         return memberModel.isNicknameValid(nickname);
     }
