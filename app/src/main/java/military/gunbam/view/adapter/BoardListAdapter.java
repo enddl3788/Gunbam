@@ -15,18 +15,17 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import java.util.ArrayList;
 
+import military.gunbam.FirebaseHelper;
 import military.gunbam.R;
 import military.gunbam.listener.OnPostListener;
 import military.gunbam.model.Post.PostInfo;
-import military.gunbam.FirebaseHelper;
 import military.gunbam.view.ReadContentsView;
 import military.gunbam.view.activity.PostActivity;
 import military.gunbam.view.activity.WritePostActivity;
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MainViewHolder> {
+public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.MainViewHolder> {
     private ArrayList<PostInfo> mDataset;
     private Activity activity;
     private FirebaseHelper firebaseHelper;
@@ -45,7 +44,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MainViewHolder
         notifyDataSetChanged();
     }
 
-    public HomeAdapter(Activity activity, ArrayList<PostInfo> myDataset) {
+    public BoardListAdapter(Activity activity, ArrayList<PostInfo> myDataset) {
         this.mDataset = myDataset;
         this.activity = activity;
 
@@ -135,7 +134,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MainViewHolder
 
     private void myStartActivity(Class c, PostInfo postInfo) {
         Intent intent = new Intent(activity, c);
-        intent.putExtra("boardName", postInfo.getBoardName());
         intent.putExtra("postInfo", postInfo);
         activity.startActivity(intent);
     }

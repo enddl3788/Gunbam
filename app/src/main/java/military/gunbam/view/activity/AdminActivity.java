@@ -8,9 +8,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -36,6 +42,7 @@ public class AdminActivity extends BasicActivity {
         findViewById(R.id.admin_menu_2_button).setOnClickListener(onClickListener);
         findViewById(R.id.admin_menu_3_button).setOnClickListener(onClickListener);
         findViewById(R.id.admin_menu_4_button).setOnClickListener(onClickListener);
+        findViewById(R.id.admin_menu_5_button).setOnClickListener(onClickListener);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -57,6 +64,7 @@ public class AdminActivity extends BasicActivity {
                             } else {
                                 isAnonymous = false;
                             }
+                            String boardName = "테스트";
 
                             // contentsList와 formatList를 생성
                             ArrayList<String> contentsList = new ArrayList<>();
@@ -83,6 +91,7 @@ public class AdminActivity extends BasicActivity {
                             postMap.put("createdAt", date);
                             postMap.put("isAnonymous", isAnonymous);
                             postMap.put("recommendationCount", recommendationCount);
+                            postMap.put("boardName", boardName);
 
                             // 게시물 Firestore에 추가
                             firestore.collection("posts")
@@ -115,6 +124,32 @@ public class AdminActivity extends BasicActivity {
                 case R.id.admin_menu_4_button:
                     Log.e("getKeyHash", ""+ getKeyHash(AdminActivity.this));
                     showToast(AdminActivity.this,"getKeyHash" + getKeyHash(AdminActivity.this));
+                    break;
+
+                case R.id.admin_menu_5_button:
+                    // "posts" 컬렉션에 대한 참조 가져오기
+                    CollectionReference postsRef = firestore.collection("posts");
+
+                    // "boardName" 필드가 "테스트"인 데이터 찾기
+                    //Query query = postsRef.whereEqualTo("boardName", "테스트");
+
+                    // "contents" 배열에 "이것은 텍스트 내용입니다."를 포함한 데이터 찾기
+                    Query query = postsRef.whereArrayContains("contents", "이것은 텍스트 내용입니다.");
+
+                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    // 각 문서를 삭제
+                                    firestore.collection("posts").document(document.getId()).delete();
+                                }
+                            } else {
+                                // 오류 처리
+                            }
+                        }
+                    });
+                    finish();
                     break;
             }
         }

@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import military.gunbam.R;
 import military.gunbam.model.CommentInfo;
 import military.gunbam.model.Post.PostInfo;
-import military.gunbam.model.login.LoginResult;
 import military.gunbam.view.ReadContentsView;
 import military.gunbam.view.fragment.CommentListFragment;
 import military.gunbam.viewmodel.PostViewModel;
@@ -45,7 +43,7 @@ public class PostActivity extends BasicActivity {
     private EditText commentEditText;
     private ImageButton postCommentButton;
     private CheckBox anonymousCheckBox;
-    private TextView titleTextView;
+    private TextView titleTextView, boardNameTextView;
 
     private PostViewModel postViewModel;
     private ArrayList<PostInfo> postList;
@@ -77,6 +75,7 @@ public class PostActivity extends BasicActivity {
         commentEditText = findViewById(R.id.commentEditText);
         anonymousCheckBox = findViewById(R.id.commentAnonymousCheckBox);
         titleTextView = findViewById(R.id.titleTextView);
+        boardNameTextView = findViewById(R.id.boardNameTextView);
 
         uiUpdate();
 
@@ -124,6 +123,7 @@ public class PostActivity extends BasicActivity {
     private void uiUpdate(){
         if (postInfo != null && !TextUtils.isEmpty(postInfo.getTitle())) {
             titleTextView.setText(postInfo.getTitle());
+            boardNameTextView.setText(postInfo.getBoardName());
             readContentsVIew.setPostInfo(postInfo);
         } else {
             showToast(PostActivity.this, "게시물을 불러오지 못하였습니다.");

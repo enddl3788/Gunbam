@@ -17,10 +17,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import military.gunbam.R;
 import military.gunbam.utils.Util;
-import military.gunbam.view.fragment.ChattingFragment;
+import military.gunbam.view.fragment.BoardListFragment;
 import military.gunbam.view.fragment.HomeFragment;
 import military.gunbam.view.fragment.KakaoMapFragment;
-import military.gunbam.view.fragment.MyPageFragment;
 import military.gunbam.viewmodel.MainViewModel;
 
 public class MainActivity extends BasicActivity {
@@ -79,12 +78,11 @@ public class MainActivity extends BasicActivity {
                         selectedFragment = new HomeFragment();
                         break;
                     case R.id.postList:
-                        // 예시: 다른 섹션으로 이동하는 Fragment를 설정합니다.
-                        //selectedFragment = new PostListFragment();
+                        selectedFragment = new BoardListFragment();
                         break;
                     case R.id.myPage:
                         // 예시: MyPage 섹션으로 이동하는 Fragment를 설정합니다.
-                        selectedFragment = new MyPageFragment();
+                        //selectedFragment = new MyPageFragment();
                         break;
                     case R.id.tmoSearch:
                         // 권한 체크
@@ -101,7 +99,6 @@ public class MainActivity extends BasicActivity {
                         break;
                     case R.id.report:
                         // 예시: 다른 섹션으로 이동하는 Fragment를 설정합니다.
-                        selectedFragment = new ChattingFragment();
                         break;
                 }
 

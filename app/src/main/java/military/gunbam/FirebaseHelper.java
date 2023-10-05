@@ -25,6 +25,8 @@ public class FirebaseHelper {
     private OnPostListener onPostListener;
     private int successCount;
 
+    String TAG = "FirebaseHelper";
+
     public FirebaseHelper(Activity activity) {
         this.activity = activity;
     }
@@ -33,11 +35,13 @@ public class FirebaseHelper {
         this.onPostListener = onPostListener;
     }
 
-    public void storageDelete(final PostInfo postInfo){
+    public void storageDelete(PostInfo postInfo){
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
         final String id = postInfo.getId();
+        Log.e(TAG, "" + postInfo.getId());
+        Log.e(TAG, "" + postInfo.getTitle());
         ArrayList<String> contentsList = postInfo.getContents();
         for (int i = 0; i < contentsList.size(); i++) {
             String contents = contentsList.get(i);
@@ -64,22 +68,26 @@ public class FirebaseHelper {
     private void storeDelete(final String id, final PostInfo postInfo) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         if (successCount == 0) {
-            firebaseFirestore.collection("posts").document(id)
-                    .delete()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            showToast(activity, "게시글을 삭제하였습니다.");
-                            onPostListener.onDelete(postInfo);
-                            //postsUpdate();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            showToast(activity, "게시글을 삭제하지 못하였습니다.");
-                        }
-                    });
+            if (id != null) {
+                firebaseFirestore.collection("posts").document(id)
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                showToast(activity, "게시글을 삭제하였습니다.");
+                                onPostListener.onDelete(postInfo);
+                                //postsUpdate();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showToast(activity, "게시글을 삭제하지 못하였습니다.");
+                            }
+                        });
+            } else {
+                Log.e(TAG, "Document ID is null. Cannot delete document.");
+            }
         }
     }
 }

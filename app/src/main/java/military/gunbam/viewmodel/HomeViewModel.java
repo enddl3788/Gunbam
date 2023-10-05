@@ -70,6 +70,7 @@ public class HomeViewModel extends ViewModel {
     // 게시물 작성 화면으로 이동
     public void navigateToWritePost(Context context) {
         Intent intent = new Intent(context, WritePostActivity.class);
+        intent.putExtra("boardName", "자유게시판");
         context.startActivity(intent);
     }
 
@@ -150,16 +151,23 @@ public class HomeViewModel extends ViewModel {
                         }
                         ArrayList<PostInfo> newPostList = postListLiveData.getValue();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            newPostList.add(new PostInfo(
-                                    document.getData().get("title").toString(),
-                                    (ArrayList<String>) document.getData().get("contents"),
-                                    (ArrayList<String>) document.getData().get("formats"),
-                                    document.getData().get("publisher").toString(),
-                                    new Date(document.getDate("createdAt").getTime()),
-                                    Boolean.parseBoolean(document.getData().get("isAnonymous").toString()),
-                                    Integer.parseInt(document.getData().get("recommendationCount").toString()),
-                                    document.getId()
-                            ));
+                            try {
+                                String boardName = document.getData().get("boardName").toString();
+                                newPostList.add(new PostInfo(
+                                        document.getData().get("title").toString(),
+                                        (ArrayList<String>) document.getData().get("contents"),
+                                        (ArrayList<String>) document.getData().get("formats"),
+                                        document.getData().get("publisher").toString(),
+                                        new Date(document.getDate("createdAt").getTime()),
+                                        Boolean.parseBoolean(document.getData().get("isAnonymous").toString()),
+                                        Integer.parseInt(document.getData().get("recommendationCount").toString()),
+                                        boardName,
+                                        document.getId()
+                                ));
+                                Log.e(TAG, "" + document.getId());
+                            } catch (NullPointerException e) {
+                                Log.e(TAG, "Error retrieving boardName: " + e.getMessage());
+                            }
                         }
                         postListLiveData.setValue(newPostList);
                     } else {
