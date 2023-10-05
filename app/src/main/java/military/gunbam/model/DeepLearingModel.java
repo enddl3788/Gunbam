@@ -8,12 +8,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.icu.util.Output;
 import android.media.Image;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.mediapipe.framework.image.BitmapImageBuilder;
+import com.google.mediapipe.tasks.components.containers.Category;
+import com.google.mediapipe.tasks.components.containers.Detection;
 import com.google.mediapipe.tasks.core.BaseOptions;
 import com.google.mediapipe.tasks.core.OutputHandler;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
@@ -28,6 +31,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DeepLearingModel {
@@ -154,6 +158,9 @@ public class DeepLearingModel {
                     class name  : dog
         *
         * */
+        Log.d("이전테스트","ㅇ");
+        Log.d("이미지크기테스트:",Integer.toString(deepLearningImageView.getWidth()));
+
         processedBitmap  = Bitmap.createScaledBitmap(processedBitmap, deepLearningImageView.getWidth(), deepLearningImageView.getHeight(), true);
 
         Canvas canvas = new Canvas(processedBitmap );

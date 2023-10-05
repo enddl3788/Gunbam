@@ -32,6 +32,7 @@ import java.util.Date;
 
 import military.gunbam.R;
 import military.gunbam.viewmodel.DeepLearningViewModel;
+import military.gunbam.viewmodel.DeepLearningViewModelFactory;
 
 public class TestDeepLearningActivity extends BasicActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -44,21 +45,20 @@ public class TestDeepLearningActivity extends BasicActivity {
     private ObjectDetectorResult detectionResult;
     private DeepLearningViewModel deepLearningViewModel;
     private Button selectImageButton;
-
+    private static final String MODEL_PATH = "model2.tflite";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testdeeplearning);
 
-        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(this, "model2.tflite")).get(DeepLearningViewModel.class);
-        deepLearningViewModel = new DeepLearningViewModel(this, "model2.tflite");
+        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(this, MODEL_PATH)).get(DeepLearningViewModel.class);
+        deepLearningViewModel = new DeepLearningViewModel(this, MODEL_PATH);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
         imgViewResult = findViewById(R.id.img_view_result);
         Context context = getApplication();
-        String modelPath = "model.tflite";
-        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(context, modelPath)).get(DeepLearningViewModel.class);
+        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(context, MODEL_PATH)).get(DeepLearningViewModel.class);
 
         options = ObjectDetector.ObjectDetectorOptions.builder()
-                        .setBaseOptions(BaseOptions.builder().setModelAssetPath("model.tflite").build())
+                        .setBaseOptions(BaseOptions.builder().setModelAssetPath(MODEL_PATH).build())
                         .setRunningMode(RunningMode.IMAGE)
                         .setMaxResults(5)
                         .build();
