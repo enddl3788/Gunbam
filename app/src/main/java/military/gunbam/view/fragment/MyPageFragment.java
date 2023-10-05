@@ -10,11 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.lang.reflect.Member;
+
 import military.gunbam.R;
 import military.gunbam.utils.Util;
 import military.gunbam.view.activity.LoginActivity;
 import military.gunbam.view.activity.MemberInitActivity;
 import military.gunbam.view.activity.PostActivity;
+import military.gunbam.viewmodel.MemberInitViewModel;
 
 public class MyPageFragment extends Fragment {
     public MyPageFragment() {
@@ -29,7 +32,7 @@ public class MyPageFragment extends Fragment {
         view.findViewById(R.id.viewProfileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myStartActivity(CalculatorFragment.class);
+                //myStartActivity(CalculatorFragment.class);
             }
         });
 
@@ -68,7 +71,8 @@ public class MyPageFragment extends Fragment {
         view.findViewById(R.id.deleteAccountButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MemberInitViewModel viewModel;
+                //viewModel.
             }
         });
         return view;
