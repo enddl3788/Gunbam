@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -44,6 +45,8 @@ public class DeepLearingModel {
     private ObjectDetector.ObjectDetectorOptions options;
     private ObjectDetectorResult detectionResult;
     private ImageView deepLearningImageView;
+    private Bitmap processedBitmap, originalBitmap;
+
     public DeepLearingModel(Context context, String modelPath) {
         options = ObjectDetector.ObjectDetectorOptions.builder()
                 .setBaseOptions(BaseOptions.builder().setModelAssetPath(modelPath).build())
@@ -55,10 +58,11 @@ public class DeepLearingModel {
 
 
     public Bitmap deepLearing(Bitmap bitmap) {
-        //Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test_596);
-        Log.d("이미지뷰",bitmap.getWidth() + " " + bitmap.getHeight());
+        originalBitmap = bitmap;
+        Log.d("이미지뷰",originalBitmap.getWidth() + " " + originalBitmap.getHeight());
 
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, WIDTH, HEIGHT, true);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, WIDTH, HEIGHT, true);
+
         int[] intValues = new int[WIDTH * HEIGHT];
         resizedBitmap.getPixels(intValues, 0, resizedBitmap.getWidth(), 0, 0, resizedBitmap.getWidth(), resizedBitmap.getHeight());
 
@@ -79,30 +83,15 @@ public class DeepLearingModel {
             }
         }
 
-        float[][] outputScores = new float[1][25];
-        float[][][] outputLocations = new float[1][25][4];
-        float[] outputDetections = new float[1];
-        float[][] outputCategories = new float[1][25];
-
-        Map<Integer, Object> outputMap = new HashMap<>();
-        outputMap.put(0, outputScores);
-        outputMap.put(1, outputLocations);
-        outputMap.put(2, outputDetections);
-        outputMap.put(3, outputCategories);
-
-        MPImage mpImage = new BitmapImageBuilder(bitmap).build();
+        MPImage mpImage = new BitmapImageBuilder(originalBitmap).build();
         ObjectDetectorResult detectionResult = objectDetector.detect(mpImage);
 
-
+        processedBitmap = originalBitmap;
 
         OutputHandler.PureResultListener<ObjectDetectorResult> listener = new OutputHandler.PureResultListener<ObjectDetectorResult>() {
             @Override
             public void run(ObjectDetectorResult result) {
-                // 이곳에 원하는 동작을 구현합니다.
-                // result.detections()
-                // result.timestampMs()
-                // result.boundingBox()
-                // result.categories()
+
                 long timestampMs = result.timestampMs();
                 System.out.println("결과값 출력");
                 System.out.println("timestampMs: " + Long.toString(result.timestampMs()));
@@ -110,10 +99,10 @@ public class DeepLearingModel {
                 for(Detection detection : detections){
                     RectF bbox = detection.boundingBox();
 
-                    System.out.println("bbox.bottom: " +bbox.bottom);
-                    System.out.println("bbox.left: " +bbox.left);
-                    System.out.println("bbox.right: " +bbox.right);
-                    System.out.println("bbox.top: " +bbox.top);
+                    //System.out.println("bbox.bottom: " +bbox.bottom);
+                    //System.out.println("bbox.left: " +bbox.left);
+                    //System.out.println("bbox.right: " +bbox.right);
+                    //System.out.println("bbox.top: " +bbox.top);
 
                     List<Category> category = detection.categories();
 
@@ -122,117 +111,80 @@ public class DeepLearingModel {
                         String displayName = cat.displayName();
                         float catScore = cat.score();
                         int index = cat.index();
-                        System.out.println("catName: " + catName);
-                        System.out.println("displayName: " + displayName);
-                        System.out.println("catScore: " + Float.toString(catScore));
-                        System.out.println("index: " + Integer.toString(index));
+                        //System.out.println("catName: " + catName);
+                        //System.out.println("displayName: " + displayName);
+                        //System.out.println("catScore: " + catScore);
+                        //System.out.println("index: " + Integer.toString(index));
 
+                        if (catScore >= 0.4) {
+                            // 이미지에 바운딩 박스 및 정보를 그리고 수정된 비트맵을 얻습니다.
+                            processedBitmap = mosaicBoundingBoxOnBitmap(originalBitmap, bbox, catName, catScore);
+                            System.out.println("catName: " + catName);
+                            System.out.println("catScore: " + catScore);
+                        }
                     }
-
                 }
-
-
-
             }
         };
+
         listener.run(detectionResult);
+        Log.d("이미지뷰",processedBitmap.getWidth() + "*" + processedBitmap.getHeight());
+        return processedBitmap ;
+    }
 
+    public Bitmap mosaicBoundingBoxOnBitmap(Bitmap bitmap, RectF bbox, String catName, float catScore) {
+        // Create a mutable copy of the input bitmap to work on
+        Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 
+        // Create a Canvas object to draw on the mutable bitmap
+        Canvas canvas = new Canvas(mutableBitmap);
 
-        Bitmap processedBitmap  = bitmap;//BitmapFactory.decodeResource(getResources(), R.drawable.test_596);
-        //deepLearningImageView.setImageBitmap(bitmap);
+        // Define the paint for drawing the bounding box
+        Paint paint = new Paint();
+        paint.setColor(Color.RED); // You can choose any color you like
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(3); // Adjust the width of the bounding box lines
 
-        /*
-        * ObjectDetectorResult:
-            Detection #0:
-                Box: (x: 355, y: 133, w: 190, h: 206)
-                Categories:
-                    index       : 17
-                    score       : 0.73828
-                    class name  : dog
-            Detection #1:
-                Box: (x: 103, y: 15, w: 138, h: 369)
-                Categories:
-                    index       : 17
-                    score       : 0.73047
-                    class name  : dog
-        *
-        * */
-        Log.d("이전테스트","ㅇ");
-        Log.d("이미지크기테스트:",Integer.toString(deepLearningImageView.getWidth()));
+        // Draw the bounding box on the Canvas
+        // canvas.drawRect(bbox, paint);
 
-        processedBitmap  = Bitmap.createScaledBitmap(processedBitmap, deepLearningImageView.getWidth(), deepLearningImageView.getHeight(), true);
+        // Get the bounding box coordinates
+        int left = Math.max(0, (int) bbox.left);
+        int top = Math.max(0, (int) bbox.top);
+        int right = Math.min(bitmap.getWidth(), (int) bbox.right);
+        int bottom = Math.min(bitmap.getHeight(), (int) bbox.bottom);
 
-        Canvas canvas = new Canvas(processedBitmap );
-        int numDetections = (int) outputDetections[0];
-        for (int i = 0; i < numDetections; i++) {
-            Log.d("확률", outputScores[0][i] + "확률");
-            try {
-                if(outputScores[0][i] >= 0.3) {
-                    Log.d("확률", outputScores[0][i] + "통과");
-                    float[] location = outputLocations[0][i];
-                    int x1 = (int) (location[1] * deepLearningImageView.getWidth() );
-                    int y1 = (int) (location[0] * deepLearningImageView.getHeight() );
-                    int x2 = (int) (location[3] * deepLearningImageView.getWidth() );
-                    int y2 = (int) (location[2] * deepLearningImageView.getHeight() );
+        // Define the size of the mosaic pixels (adjust as needed)
+        int mosaicSize = 100;
 
-                    if (x1 < 0) {
-                        x1 = 0;
+        // Loop through the bounding box region and apply mosaic effect
+        for (int y = top; y < bottom; y += mosaicSize) {
+            for (int x = left; x < right; x += mosaicSize) {
+                int color = mutableBitmap.getPixel(x, y);
+                for (int mosaicY = y; mosaicY < y + mosaicSize && mosaicY < bottom; mosaicY++) {
+                    for (int mosaicX = x; mosaicX < x + mosaicSize && mosaicX < right; mosaicX++) {
+                        mutableBitmap.setPixel(mosaicX, mosaicY, color);
                     }
-                    if (x2 < 0) {
-                        x2 = 0;
-                    }
-                    Log.d("영역_3", x1 + " " + y1 + " " + x2 + " " + y2);
-
-                    int categoryIndex = (int) outputCategories[0][i]; // 객체의 카테고리 인덱스 추출
-                    String category = labels[categoryIndex]; // 레이블 목록에서 해당 인덱스에 해당하는 카테고리 추출
-
-                    Paint paint = new Paint();
-
-                    // 바운딩 박스 출력
-                    paint.setColor(Color.RED);
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setStrokeWidth(10.0f);
-                    canvas.drawRect(x1, y1, x2, y2, paint);
-
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setTextSize(30);
-                    paint.setColor(Color.BLACK);
-                    canvas.drawText(category, x1 + 10, y1, paint); // 카테고리 출력
-
-                    // 해당 영역 캡처 및 모자이크 처리
-                    int width = x2 - x1;
-                    int height = y2 - y1;
-                    Log.d("영역_1", width + " " + height);
-                    Bitmap capture = Bitmap.createBitmap(processedBitmap , x1, y1, width, height);
-                    Bitmap scaledCapture = Bitmap.createScaledBitmap(capture, width/30, height/30, false);  // 모자이크 강도 조절 부분
-                    Bitmap finalCapture = Bitmap.createScaledBitmap(scaledCapture, width, height, false);
-
-                    // 모자이크 처리된 영역 덮어씌우기
-                    Rect rect = new Rect(x1, y1, x2, y2);
-                    Log.d("영역_2", rect + " ");
-                    canvas.drawBitmap(finalCapture, null, rect, null);
-
                 }
-            } catch (Exception e) {
-                Log.d("error", String.valueOf(e));
             }
         }
-        return processedBitmap ;
-        /*
-        imgViewResult.setImageBitmap(bitmap2);
-        Log.d("이미지뷰W",Integer.toString(imgViewResult.getWidth()));
-        Log.d("이미지뷰H",Integer.toString(imgViewResult.getHeight()));
 
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            bitmap2.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.flush();
-            fos.getFD().sync(); // flush file descriptor
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         */
+        // Define the paint for drawing text (e.g., category name and score)
+        Paint textPaint = new Paint();
+        textPaint.setColor(Color.RED); // You can choose a text color
+        textPaint.setTextSize(100); // Adjust the text size
+
+        // Calculate the position to draw the text
+        float textX = bbox.left;
+        float textY = bbox.bottom + 20; // Adjust the vertical position
+
+        // Draw the category name and score
+        // canvas.drawText("Category: " + catName, textX, textY, textPaint);
+        // canvas.drawText("Score: " + catScore, textX, textY + 100, textPaint); // Adjust vertical spacing
+
+        return mutableBitmap; // Return the bitmap with bounding box and mosaic effect
     }
+
     public MappedByteBuffer loadModelFile(Activity activity, String modelPath) throws IOException {
         AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(modelPath);
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
@@ -241,10 +193,10 @@ public class DeepLearingModel {
         long declaredLength = fileDescriptor.getDeclaredLength();
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
-    public Bitmap mergeBitmapImage(Bitmap leftUp, Bitmap rightUp, Bitmap leftDown, Bitmap rightDown) {
+    public Bitmap mergeBitmapImage(Bitmap originalBitmap, Bitmap leftUp, Bitmap rightUp, Bitmap leftDown, Bitmap rightDown) {
         // 가로로 합쳐진 이미지의 폭과 높이 계산
-        int resultWidth = leftUp.getWidth() + rightUp.getWidth();
-        int resultHeight = leftUp.getHeight() + leftDown.getHeight();
+        int resultWidth = originalBitmap.getWidth();
+        int resultHeight = originalBitmap.getHeight();
 
         // 새로운 비트맵 생성
         Bitmap mergeResult = Bitmap.createBitmap(resultWidth, resultHeight, Bitmap.Config.ARGB_8888);
@@ -255,8 +207,11 @@ public class DeepLearingModel {
         canvas.drawBitmap(rightUp, leftUp.getWidth(), 0, null);
         canvas.drawBitmap(leftDown, 0, leftUp.getHeight(), null);
         canvas.drawBitmap(rightDown, leftUp.getWidth(), leftUp.getHeight(), null);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(mergeResult, WIDTH*4, HEIGHT*4, true);
-        return resizedBitmap;
-    }
 
+        //Bitmap resizedBitmap = Bitmap.createScaledBitmap(mergeResult, WIDTH*2, HEIGHT*2, true);
+
+        Log.d("이미지뷰",mergeResult.getWidth() + "*" + mergeResult.getHeight());
+
+        return mergeResult;
+    }
 }

@@ -15,13 +15,13 @@
         android:id="@+id/admin_menu_1_button"/>
 
     <Button
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/button_rounded_bg"
-    android:layout_margin="10dp"
-    android:text="@string/admin_menu_2"
-    android:textColor="@color/white"
-    android:id="@+id/admin_menu_2_button"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_rounded_bg"
+        android:layout_margin="10dp"
+        android:text="@string/admin_menu_2"
+        android:textColor="@color/white"
+        android:id="@+id/admin_menu_2_button"/>
 
     <Button
         android:layout_width="match_parent"
@@ -31,6 +31,15 @@
         android:text="@string/admin_menu_3"
         android:textColor="@color/white"
         android:id="@+id/admin_menu_3_button"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_rounded_bg"
+        android:layout_margin="10dp"
+        android:text="@string/admin_menu_4"
+        android:textColor="@color/white"
+        android:id="@+id/admin_menu_4_button"/>
     <!--
     <TextView
         android:layout_width="match_parent"

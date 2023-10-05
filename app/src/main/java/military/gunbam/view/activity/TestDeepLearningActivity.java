@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.mediapipe.framework.image.BitmapImageBuilder;
 import com.google.mediapipe.framework.image.MPImage;
 import com.google.mediapipe.tasks.core.BaseOptions;
+import com.google.mediapipe.tasks.core.OutputHandler;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
 import com.google.mediapipe.tasks.vision.objectdetector.ObjectDetector;
 import com.google.mediapipe.tasks.vision.objectdetector.ObjectDetectorResult;
@@ -45,42 +46,28 @@ public class TestDeepLearningActivity extends BasicActivity {
     private ObjectDetectorResult detectionResult;
     private DeepLearningViewModel deepLearningViewModel;
     private Button selectImageButton;
-    private static final String MODEL_PATH = "model2.tflite";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testdeeplearning);
 
-        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(this, MODEL_PATH)).get(DeepLearningViewModel.class);
-        deepLearningViewModel = new DeepLearningViewModel(this, MODEL_PATH);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
-        imgViewResult = findViewById(R.id.img_view_result);
         Context context = getApplication();
-        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(context, MODEL_PATH)).get(DeepLearningViewModel.class);
+        String modelPath = "model2.tflite";
+        deepLearningViewModel = new ViewModelProvider(this, new DeepLearningViewModelFactory(context, modelPath)).get(DeepLearningViewModel.class);
+        deepLearningViewModel = new DeepLearningViewModel(this, modelPath);
+        imgViewResult = findViewById(R.id.img_view_result);
 
         options = ObjectDetector.ObjectDetectorOptions.builder()
-                        .setBaseOptions(BaseOptions.builder().setModelAssetPath(MODEL_PATH).build())
-                        .setRunningMode(RunningMode.IMAGE)
-                        .setMaxResults(5)
-                        .build();
+                .setBaseOptions(BaseOptions.builder().setModelAssetPath(modelPath).build())
+                .setRunningMode(RunningMode.IMAGE)
+                .setMaxResults(5)
+                .build();
         objectDetector = ObjectDetector.createFromOptions(getApplicationContext(), options);
-
-        imgViewResult = findViewById(R.id.img_view_result);
 
         deepLearningViewModel.getResultBitmap().observe(this, new Observer<Bitmap>() {
             @Override
-            public void onChanged(@Nullable Bitmap resultBitmap) {
-                if (resultBitmap != null) {
-                    imgViewResult.setImageBitmap(resultBitmap);
-                }
-            }
-        });
-
-        //Bitmap bitmap = null;
-        //MPImage mpImage = new BitmapImageBuilder(bitmap).build();
-        deepLearningViewModel.getResultBitmap().observe(this, new Observer<Bitmap>() {
-            public void onChanged(@Nullable Bitmap resultBitmap) {
-                if (resultBitmap != null) {
-                    imgViewResult.setImageBitmap(resultBitmap);
+            public void onChanged(@Nullable Bitmap bitmap) {
+                if (bitmap != null) {
+                    imgViewResult.setImageBitmap(bitmap);
                 }
             }
         });
@@ -90,8 +77,6 @@ public class TestDeepLearningActivity extends BasicActivity {
         selectImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 출력 결과 확인
-                deepLearningViewModel.run(bitmap);
                 // 갤러리에서 이미지 선택
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, PICK_IMAGE_REQUEST);

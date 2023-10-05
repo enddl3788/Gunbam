@@ -5,8 +5,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -43,6 +45,9 @@
         <activity android:name=".view.activity.ChattingActivity"/>
         <activity android:name=".view.activity.TestDeepLearningActivity"/>
 
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="a0c642890881f819a7a86e2cdfdb7534"/>   <!--네이티브 앱 키 넣기-->
     </application>
 
 </manifest>
