@@ -54,6 +54,9 @@ public class MyPageFragment extends Fragment {
         view.findViewById(R.id.viewCommentsButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //String publisher= "";
+                String publisher = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                myStartActivity(BoardListActivity.class, "publisher", publisher);
                 //myStartActivity(BoardListActivity.class, "publisher",);
                 /*getFragmentManager().beginTransaction()
                         .replace(R.id.main_board_list_fragment, new PostActivity())
