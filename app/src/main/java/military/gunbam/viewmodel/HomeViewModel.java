@@ -164,7 +164,6 @@ public class HomeViewModel extends ViewModel {
                                         boardName,
                                         document.getId()
                                 ));
-                                Log.e(TAG, "" + document.getId());
                             } catch (NullPointerException e) {
                                 Log.e(TAG, "Error retrieving boardName: " + e.getMessage());
                             }

@@ -40,8 +40,6 @@ public class FirebaseHelper {
         StorageReference storageRef = storage.getReference();
 
         final String id = postInfo.getId();
-        Log.e(TAG, "" + postInfo.getId());
-        Log.e(TAG, "" + postInfo.getTitle());
         ArrayList<String> contentsList = postInfo.getContents();
         for (int i = 0; i < contentsList.size(); i++) {
             String contents = contentsList.get(i);

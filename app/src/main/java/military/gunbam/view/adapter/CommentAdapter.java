@@ -17,10 +17,13 @@ import java.util.Locale;
 
 import military.gunbam.R;
 import military.gunbam.model.CommentInfo;
+import military.gunbam.view.activity.PostActivity;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     private List<CommentInfo> commentList;
     private Context context;
+    String ParentCommentId;
+    String TAG = "CommentAdapter";
 
     public CommentAdapter(Context context, List<CommentInfo> commentList) {
         this.context = context;
@@ -55,6 +58,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             holder.reply_img.setVisibility(View.GONE);
             holder.replyButton.setVisibility(View.VISIBLE);
         }
+        // 댓글 답글 버튼 클릭 시 리스너 호출
+        holder.replyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParentCommentId = comment.getCommentId();
+                PostActivity.ReplyButtonEvent(ParentCommentId);
+            }
+        });
     }
 
     @Override

@@ -112,7 +112,6 @@ public class BoardListViewModel extends ViewModel {
                                     document.getData().get("boardName").toString(),
                                     document.getId()
                             ));
-                            Log.e(TAG, "" + document.getId());
                         }
                         postListLiveData.setValue(newPostList);
                     } else {

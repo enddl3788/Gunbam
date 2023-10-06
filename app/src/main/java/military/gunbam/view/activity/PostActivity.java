@@ -3,12 +3,15 @@ package military.gunbam.view.activity;
 import static military.gunbam.view.fragment.CommentListFragment.loadComments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,13 +43,17 @@ public class PostActivity extends BasicActivity {
 
     private ReadContentsView readContentsVIew;
     private LinearLayout contentsLayout;
-    private EditText commentEditText;
+    private static EditText commentEditText;
     private ImageButton postCommentButton;
     private CheckBox anonymousCheckBox;
     private TextView titleTextView, boardNameTextView;
 
     private PostViewModel postViewModel;
     private ArrayList<PostInfo> postList;
+
+    public static String parentCommentId;
+
+    String TAG = "PostActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +63,7 @@ public class PostActivity extends BasicActivity {
         postViewModel = new ViewModelProvider(this, new PostViewModelFactory(this)).get(PostViewModel.class);
 
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
-        //contentsLayout = findViewById(R.id.contentsLayout);
         readContentsVIew = findViewById(R.id.readContentsView);
-        /*
-        postViewModel.getPostListLiveData().observe(this, new Observer<PostInfo>() {
-            // Adapter에 데이터를 설정하여 화면 업데이트
-            //homeAdapter.setPostList(postList);
-            @Override
-            public void onChanged(PostInfo postInfo) {
-                postList.add(postInfo);
-            }
-        });
-        */
 
         findViewById(R.id.viewPostBackButton).setOnClickListener(onClickListener);
         findViewById(R.id.postCommentButton).setOnClickListener(onClickListener);
@@ -144,6 +140,12 @@ public class PostActivity extends BasicActivity {
         return postViewModel.firebaseStoreCollection(comment);
     }
 
+    public static void ReplyButtonEvent(String parentCommentId) {
+        // Update UI or perform any necessary actions in response to the reply button click
+        PostActivity.commentEditText.setHint("대댓글을 입력하세요.");
+        PostActivity.parentCommentId = parentCommentId;
+        Log.e("테스트", "" + parentCommentId);
+    }
 
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -166,7 +168,7 @@ public class PostActivity extends BasicActivity {
                     commentAuthor = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                     if (!TextUtils.isEmpty(commentContent)) {
-                        CommentInfo newComment = new CommentInfo(postId, commentContent, commentAuthor, isAnonymous, null, commentUploadTime);
+                        CommentInfo newComment = new CommentInfo(postId, commentContent, commentAuthor, isAnonymous, parentCommentId, commentUploadTime);
 
                         CollectionReference commentsCollection = collection("comments");
                         commentsCollection.add(newComment)
@@ -176,17 +178,27 @@ public class PostActivity extends BasicActivity {
                                         showToast(PostActivity.this, "댓글이 작성되었습니다.");
                                         commentEditText.setText(""); // Clear the comment input
                                         loadComments(postId);
+
+                                        // Hide the keyboard
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.hideSoftInputFromWindow(commentEditText.getWindowToken(), 0);
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         showToast(PostActivity.this, "댓글 작성에 실패했습니다.");
+                                        // Hide the keyboard
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.hideSoftInputFromWindow(commentEditText.getWindowToken(), 0);
                                     }
                                 });
                     } else {
                         showToast(PostActivity.this, "댓글을 입력해주세요.");
                     }
+
+                    parentCommentId = null;
+                    commentEditText.setHint("댓글을 입력하세요.");
                     break;
                 }
             }
