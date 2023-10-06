@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import military.gunbam.R;
 import military.gunbam.utils.Util;
 import military.gunbam.view.fragment.BoardListFragment;
+import military.gunbam.view.fragment.ChattingFragment;
 import military.gunbam.view.fragment.HomeFragment;
 import military.gunbam.view.fragment.KakaoMapFragment;
+import military.gunbam.view.fragment.MyPageFragment;
 import military.gunbam.viewmodel.MainViewModel;
 
 public class MainActivity extends BasicActivity {
@@ -82,7 +85,7 @@ public class MainActivity extends BasicActivity {
                         break;
                     case R.id.myPage:
                         // 예시: MyPage 섹션으로 이동하는 Fragment를 설정합니다.
-                        //selectedFragment = new MyPageFragment();
+                        selectedFragment = new MyPageFragment();
                         break;
                     case R.id.tmoSearch:
                         // 권한 체크
@@ -98,7 +101,7 @@ public class MainActivity extends BasicActivity {
                         }
                         break;
                     case R.id.report:
-                        // 예시: 다른 섹션으로 이동하는 Fragment를 설정합니다.
+                        selectedFragment = new ChattingFragment();
                         break;
                 }
 

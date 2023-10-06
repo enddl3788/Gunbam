@@ -10,10 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.lang.reflect.Member;
 
 import military.gunbam.R;
 import military.gunbam.utils.Util;
+import military.gunbam.view.activity.BoardListActivity;
 import military.gunbam.view.activity.LoginActivity;
 import military.gunbam.view.activity.MemberInitActivity;
 import military.gunbam.view.activity.PostActivity;
@@ -32,7 +35,7 @@ public class MyPageFragment extends Fragment {
         view.findViewById(R.id.viewProfileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //myStartActivity(CalculatorFragment.class);
+                //StartActivity(CalculatorFragment.class);
             }
         });
 
@@ -40,10 +43,9 @@ public class MyPageFragment extends Fragment {
         view.findViewById(R.id.viewPostsButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*getFragmentManager().beginTransaction()
-                        .replace(R.id.main_board_list_fragment, new PostActivity())
-                        .addToBackStack(null)
-                        .commit();*/
+                //String publisher= "";
+                String publisher = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                myStartActivity(BoardListActivity.class, "publisher", publisher);
             }
 
         });
@@ -52,6 +54,7 @@ public class MyPageFragment extends Fragment {
         view.findViewById(R.id.viewCommentsButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //myStartActivity(BoardListActivity.class, "publisher",);
                 /*getFragmentManager().beginTransaction()
                         .replace(R.id.main_board_list_fragment, new PostActivity())
                         .addToBackStack(null)
@@ -63,7 +66,7 @@ public class MyPageFragment extends Fragment {
         view.findViewById(R.id.editProfileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myStartActivity(MemberInitActivity.class);
+                //myStartActivity(MemberInitActivity.class);
             }
         });
 
@@ -78,9 +81,11 @@ public class MyPageFragment extends Fragment {
         return view;
     }
 
-    private void myStartActivity(Class c) {
+    private void myStartActivity(Class c, String field, String fieldValue) {
         Intent intent = new Intent(getActivity(), c);
-        startActivityForResult(intent, 0);
+        intent.putExtra("field", field);
+        intent.putExtra("fieldValue", fieldValue);
+        startActivity(intent);
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

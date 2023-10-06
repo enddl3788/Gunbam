@@ -47,8 +47,8 @@ public class BoardListViewModel extends ViewModel {
     }
 
     // 게시물 목록 다시 불러오기
-    public void refreshPosts(String boardName) {
-        loadPosts(true, boardName); // true를 전달하여 데이터를 초기화하고 새로 불러오도록 합니다.
+    public void refreshPosts(String field, String boardName) {
+        loadPosts(true, field, boardName); // true를 전달하여 데이터를 초기화하고 새로 불러오도록 합니다.
     }
 
     // 게시물 작성 화면으로 이동
@@ -66,13 +66,13 @@ public class BoardListViewModel extends ViewModel {
             public void onDelete(PostInfo postInfo) {
                 // 게시물 삭제 후에 필요한 처리
                 // 예: 화면 업데이트 등
-                Log.e("로그: ", "삭제 성공");
+                Log.d("로그: ", "삭제 성공");
             }
 
             @Override
             public void onModify() {
                 // 게시물 수정 후에 필요한 처리
-                Log.e("로그: ", "수정 성공");
+                Log.d("로그: ", "수정 성공");
             }
         });
 
@@ -80,7 +80,7 @@ public class BoardListViewModel extends ViewModel {
         firebaseHelper.storageDelete(postInfo);
     }
 
-    public void loadPosts(final boolean clear, String boardName) {
+    public void loadPosts(final boolean clear, String field, String fieldValue) {
         if (updating) return;
         updating = true;
 
@@ -89,7 +89,7 @@ public class BoardListViewModel extends ViewModel {
 
         CollectionReference collectionReference = firebaseFirestore.collection("posts");
         collectionReference
-                .whereEqualTo("boardName", boardName)
+                .whereEqualTo(field, fieldValue)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .whereLessThan("createdAt", date)
                 //.limit(10)
@@ -112,7 +112,6 @@ public class BoardListViewModel extends ViewModel {
                                     document.getData().get("boardName").toString(),
                                     document.getId()
                             ));
-                            Log.e(TAG, "" + document.getId());
                         }
                         postListLiveData.setValue(newPostList);
                     } else {
