@@ -49,9 +49,9 @@ public class BoardListActivity extends BasicActivity {
         fieldValue = intent.getStringExtra("fieldValue"); //"자유게시판",  "사람아이디"
         TextView textViewBoardName = findViewById(R.id.tvTitle);
 
-        if(field == "boardName") {
+        if(field.equals("boardName")) {
             textViewBoardName.setText(fieldValue);
-        }else if(field == "publisher"){
+        }else if(field.equals("publisher")){
             textViewBoardName.setText("내가 쓴 게시글");
         }
 

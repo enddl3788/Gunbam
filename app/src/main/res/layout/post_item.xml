@@ -24,7 +24,8 @@
                 android:textSize="18sp"
                 android:maxLines="1"
                 android:text="@string/post_title"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:textStyle="bold"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/menu"
