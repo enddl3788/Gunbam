@@ -30,8 +30,9 @@ public class BoardListActivity extends BasicActivity {
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     private ArrayList<PostInfo> postList;
-    private String boardName;
-
+ //   private String boardName;
+    private String field;
+    private String fieldValue;
     private MutableLiveData<ArrayList<PostInfo>> postListLiveData = new MutableLiveData<>();
     private boolean updating;
 
@@ -43,10 +44,16 @@ public class BoardListActivity extends BasicActivity {
         setContentView(R.layout.activity_board_list);
 
         Intent intent = getIntent();
-        boardName = intent.getStringExtra("boardName");
+        field = intent.getStringExtra("field"); // "boardName"이라고 가져와지거나 "publisher"
+
+        fieldValue = intent.getStringExtra("fieldValue"); //"자유게시판",  "사람아이디"
         TextView textViewBoardName = findViewById(R.id.tvTitle);
 
-        textViewBoardName.setText(boardName);
+        if(field == "boardName") {
+            textViewBoardName.setText(fieldValue);
+        }else if(field == "publisher"){
+            textViewBoardName.setText("내가 쓴 게시글");
+        }
 
         // postList 초기화
         postList = new ArrayList<>();
@@ -80,7 +87,7 @@ public class BoardListActivity extends BasicActivity {
         });
 
         // 초기 데이터 로딩
-        boardListViewModel.loadPosts(false, boardName);
+        boardListViewModel.loadPosts(false,field, fieldValue);
 
         // 게시물 작성 버튼 클릭 이벤트
         findViewById(R.id.mainFloatingActionButton).setOnClickListener(new View.OnClickListener() {
@@ -96,7 +103,7 @@ public class BoardListActivity extends BasicActivity {
             public void onDelete(PostInfo postInfo) {
                 postList.remove(postInfo);
                 boardListAdapter.notifyDataSetChanged();
-                boardListViewModel.refreshPosts(boardName);
+                boardListViewModel.refreshPosts(field, fieldValue);
             }
 
             @Override
@@ -108,7 +115,7 @@ public class BoardListActivity extends BasicActivity {
     // 게시물 작성 화면으로 이동
     public void navigateToWritePost(Context context) {
         Intent intent = new Intent(context, WritePostActivity.class);
-        intent.putExtra("boardName", boardName);
+        intent.putExtra(field, fieldValue);
         context.startActivity(intent);
     }
 }

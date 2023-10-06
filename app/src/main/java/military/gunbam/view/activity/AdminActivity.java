@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import military.gunbam.R;
+import military.gunbam.view.fragment.ChattingFragment;
 
 public class AdminActivity extends BasicActivity {
 
@@ -113,7 +114,7 @@ public class AdminActivity extends BasicActivity {
                     break;
 
                 case R.id.admin_menu_2_button:
-                    startActivity(ChattingActivity.class);
+                    startActivity(ChattingFragment.class);
                     break;
 
                 case R.id.admin_menu_3_button:

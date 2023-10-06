@@ -13,6 +13,7 @@
     <string name="passwordResetButton">비밀번호 변경 링크 보내기</string>
     <string name="passwordResetText">비밀번호를 찾고자하는 아이디를 입력해주세요.</string>
     <string name="memberInit">회원정보</string>
+    <string name="memberEdit">회원정보 수정</string>
     <string name="ok">완료</string>
     <string name="name">이름 ex)홍길동</string>
     <string name="phoneNumber">전화번호 ex)01012345678</string>

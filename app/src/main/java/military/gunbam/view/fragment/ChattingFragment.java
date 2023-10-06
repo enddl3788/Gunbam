@@ -1,40 +1,30 @@
-package military.gunbam.view.activity;
+package military.gunbam.view.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.checkerframework.checker.units.qual.C;
-
-import military.gunbam.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import military.gunbam.R;
 import military.gunbam.model.ChatData;
-import military.gunbam.model.login.LoginResult;
 import military.gunbam.view.adapter.ChattingAdapter;
 import military.gunbam.viewmodel.ChattingViewModel;
 
-
-public class ChattingActivity extends AppCompatActivity {
+public class ChattingFragment extends Fragment {
     private RecyclerView recyclerView;
     private EditText messageEditText;
     private ImageButton sendButton;
@@ -50,11 +40,12 @@ public class ChattingActivity extends AppCompatActivity {
 
     private static final String ADMINISTRATOR_ID1 = "enddl3788@naver.com";
     private static final String ADMINISTRATOR_ID2 = "rickyhee75@naver.com";
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chatting);
+    public ChattingFragment() {
 
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_chatting, container, false);
 
         String userEmail="";
         if(currentUser==null){
@@ -71,9 +62,9 @@ public class ChattingActivity extends AppCompatActivity {
         else {
             roomID = getEmailSliceToID(userEmail);
         }
-        recyclerView = findViewById(R.id.recyclerView);
-        messageEditText = findViewById(R.id.messageEditText);
-        sendButton = findViewById(R.id.sendButton);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        messageEditText = view.findViewById(R.id.messageEditText);
+        sendButton = view.findViewById(R.id.sendButton);
 
 
         adapter = new ChattingAdapter(chatDataList, new ChattingAdapter.OnItemClickListener() {
@@ -84,15 +75,15 @@ public class ChattingActivity extends AppCompatActivity {
                 //startActivity(intent);
             }
         });
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         //recyclerView.setAdapter(adapter);
 
 
         chattingViewModel = new ViewModelProvider(this).get(ChattingViewModel.class);
         chattingViewModel.initMessageReference("chat",roomID);
-        chattingViewModel.getChatDataListLiveData().observe(this, chatDataList -> {
+        chattingViewModel.getChatDataListLiveData().observe(getViewLifecycleOwner(), chatDataList -> {
             adapter.setData(chatDataList);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
             recyclerView.setAdapter(adapter);
         });
 
@@ -114,10 +105,14 @@ public class ChattingActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        return view;
     }
 
+
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
 
         // ValueEventListener를 해제합니다.
@@ -126,5 +121,4 @@ public class ChattingActivity extends AppCompatActivity {
     private String getEmailSliceToID(String email){
         return email.substring(0, email.lastIndexOf("@"));
     }
-
 }
